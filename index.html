@@ -1,78 +1,33 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Descartographie</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script src="js/jquery.js"></script>
-    <link rel="icon" type="image/png" href="imgs/logo.png">
-    <link rel="stylesheet" href="css/jquery-jvectormap-2.0.5.css">
-    <script src="js/jquery-jvectormap-pl.js"></script>
-    <script src="js/jquery-jvectormap-france.js"></script>
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0-beta3/css/all.css" crossorigin="anonymous">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="map-zone">
-        <div id="map_regions" class="map"></div>
-    </div>
-    <div class="layout-zone">
-        
-        <div class="sidebar">
-            <div class="sidebar-top">
-                <img src="imgs/logo.png" alt="Logo Descartographie">
-                <h1>Descartographie</h1>
-            </div>
-            <h2>Élections</h2>
+    <div id="app">
+        <div id="control-panel">
+            <!-- Éléments de contrôle -->
+            <img class="logo" src="assets/img/map-icon.png" alt="descartographie_logo">
+            <h1>Descartographie</h1>
             
-            
-            <ul class="m-d expand-list">
-                <li data-md-content="200">
-                    <label name="tab" for="tab1" tabindex="-1" class="tab_lab" role="tab">Présidentielles</label>
-                    <input type="checkbox" checked class="tab" id="tab1" tabindex="0" />
-                    <span class="open-close-icon">
-                        <i class="fas fa-chevron-right"></i>
-                    </span>
-                    <div class="content">
-
-                        <ul>
-                            <li>2022
-                                <ul>
-                                    <li>
-                                        <label class="switch"><input type="checkbox" /><span></span></label>
-                                        Premier tour
-                                    </li>
-                                    <li>
-                                        <label class="switch"><input type="checkbox" /><span></span></label>
-                                        Deuxième tour
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li data-md-content="300">
-                    <label name="tab" for="tab2" tabindex="-1" class="tab_lab" role="tab">Bureaux de vote</label>
-                    <input type="checkbox" class="tab" id="tab2" tabindex="0" />
-                    <span class="open-close-icon"><i class="fas fa-chevron-right"></i></span>
-                    <div class="content">
-                        bureaux
-                    </div>
-                </li>
-            </ul>
-            
-            
+            <input type="text" id="departure" placeholder="Départ">
+            <input type="text" id="arrival" placeholder="Arrivée">
+            <button id="search">Rechercher</button><button id="reset">X</button>
+            <button id="login">Se connecter</button>
+            <button id="register">S'inscrire</button>
         </div>
-        
+        <div id="map-container">
+            <!-- Carte Leaflet chargée ici -->
+        </div>
     </div>
-    
     <footer>
-        <p>© Copyright 2023 <b>Descartographie</b>. Tous Droits Réservés.</p>
+        <p>© Copyright 2023 <strong>LoGrandCode</strong>. Tous Droits Réservés.</p>
     </footer>
-
-    <script src="js/script.js"></script>
+    <!-- Script JavaScript ici pour la logique du formulaire et l'intégration de Google Maps -->
 </body>
 </html>
