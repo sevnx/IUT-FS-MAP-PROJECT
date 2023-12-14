@@ -1,45 +1,37 @@
 export function getMetroColor(line: string): string {
     switch (line) {
         case "1":
-            return "#ffcd00";
+            return "#fece00";
         case "2":
-            return "#003df5";
+            return "#0065ae";
         case "3":
-            return "#827a04";
+            return "#a19818";
         case "3bis":
-            return "#71c5e8";
+            return "#99d4de";
         case "4":
-            return "#c800a1";
+            return "#be418d";
         case "5":
-            return "#ff7f32";
+            return "#f18032";
         case "6":
-            return "#71cc98";
+            return "#84c28e";
         case "7":
-            return "#f59bbb";
+            return "#f2a4b6";
         case "7bis":
-            return "#71cc98";
+            return "#84c28e";
         case "8":
-            return "#dd9cdf";
+            return "#cdaccf";
         case "9":
-            return "#b5bd00";
+            return "#b8dd00";
         case "10":
-            return "#c69214";
+            return "#e4b427";
         case "11":
-            return "#6e4c1e";
+            return "#8c5e24";
         case "12":
-            return "#007a53";
+            return "#007e49";
         case "13":
-            return "#71c5e8";
+            return "#99d4de";
         case "14":
-            return "#5f259f";
-        case "15":
-            return "#a50034";
-        case "16":
-            return "#f59bbb";
-        case "17":
-            return "#b5bd00";
-        case "18":
-            return "#00ab8e";
+            return "#622181";
         default:
             return "#000";
     }

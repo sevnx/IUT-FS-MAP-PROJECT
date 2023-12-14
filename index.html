@@ -15,8 +15,12 @@
             <img class="logo" src="assets/img/map-icon.png" alt="descartographie_logo">
             <h1>Descartographie</h1>
             
-            <input type="text" id="departure" placeholder="Départ">
-            <input type="text" id="arrival" placeholder="Arrivée">
+            <input type="text" id="departure" list="stations" placeholder="Départ">
+            <input type="text" id="arrival" list="stations" placeholder="Arrivée">
+            <div id="datalist-stations">
+                <!-- TODO : Link stations to datalist -->
+            </div>
+
             <button id="search">Rechercher</button><button id="reset">X</button>
             <button id="login">Se connecter</button>
             <button id="register">S'inscrire</button>
