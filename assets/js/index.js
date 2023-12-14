@@ -1,3 +1,6 @@
+
+const cors = require("cors");
+
 function getMetroColor(line) {
     switch (line) {
         case "1":
@@ -75,11 +78,11 @@ var metroIcons = {
 
 async function populateMapWithStationsAndConnections(map) {
     // Fetch the stations.json file
-    const responseStations = await fetch('stations.json');
+    const responseStations = await fetch('https://victor.ait37.fr/descartographie/json/stations.json');
     const stations = await responseStations.json();
 
     // Fetch the liaisons.json file
-    const responseLiaisons = await fetch('liaisons.json');
+    const responseLiaisons = await fetch('https://victor.ait37.fr/descartographie/json/liaisons.json');
     const liaisons = await responseLiaisons.json();
 
     // Iterate over each station

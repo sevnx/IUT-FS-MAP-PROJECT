@@ -6,6 +6,9 @@
     <title>Descartographie</title>
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="assets/js/index.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -17,21 +20,40 @@
             
             <input type="text" id="departure" list="stations" placeholder="Départ">
             <input type="text" id="arrival" list="stations" placeholder="Arrivée">
-            <div id="datalist-stations">
-                <!-- TODO : Link stations to datalist -->
-            </div>
+            <datalist id="stations">
+                <option value="ezfezf">Va niquer ta mère</option>
+            </datalist>
 
             <button id="search">Rechercher</button><button id="reset">X</button>
             <button id="login">Se connecter</button>
-            <button id="register">S'inscrire</button>
+
+            <div id="g_id_onload"
+                data-client_id="166841410239-ki6er9r9kc8cjk13skoiklrba2lkdo0u.apps.googleusercontent.com"
+                data-context="signin"
+                data-ux_mode="popup"
+                data-login_uri="https://descartographie.ait37.fr/login.php"
+                data-auto_prompt="false">
+            </div>
+
+            <div class="g_id_signin"
+                data-type="standard"
+                data-shape="rectangular"
+                data-theme="outline"
+                data-text="signin_with"
+                data-size="large"
+                data-logo_alignment="left">
+            </div>
+
+
         </div>
-        <div id="map-container">
+        <div id="map" style="width: 100%; height: 100vh;">
             <!-- Carte Leaflet chargée ici -->
         </div>
     </div>
     <footer>
         <p>© Copyright 2023 <strong>LoGrandCode</strong>. Tous Droits Réservés.</p>
     </footer>
-    <!-- Script JavaScript ici pour la logique du formulaire et l'intégration de Google Maps -->
+    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 </html>
