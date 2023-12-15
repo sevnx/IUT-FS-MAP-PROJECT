@@ -92,17 +92,19 @@ async function populateMapWithStationsAndConnections(map, stations, liaisons) {
         marker.bindPopup(stationInfo);
         marker.addTo(map);
 
-
-
         if (stationsSet.has(station.nom_gares)) {
             let additionalMarker = L.marker([station.lat, station.lon], {
                 icon: metroIcons["default"]
             })
+            additionalMarker.bindPopup(stationInfo);
             additionalMarker.addTo(map);
-        } if (station.is_end === "True") {
+        } 
+        
+        if (station.is_end === "True") {
             let additionalMarker = L.marker([station.lat, station.lon], {
                 icon: metroIcons[station.line_number]
             })
+            additionalMarker.bindPopup(stationInfo);
             additionalMarker.addTo(map);
         }
 
@@ -135,9 +137,10 @@ async function populateMapWithStationsAndConnections(map, stations, liaisons) {
 function getLeafletMap(){
     const defaultParisCoordinates = [48.864716, 2.349014];
     const map = L.map('map').setView(defaultParisCoordinates, 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        minZoom: 12,
+        minZoom: 11,
+        layers: "H"
     }).addTo(map);
     return map;
 }

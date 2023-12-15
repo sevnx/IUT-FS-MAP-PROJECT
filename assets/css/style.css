@@ -73,9 +73,17 @@ footer {
     text-align: center;
     background: var(--black-color);
     box-sizing: border-box;
+    z-index: 9999;
     padding: 5px;   
 }
 
 .mt-3{
     margin-top: 1.5rem;
+}
+
+.leaflet-layer,
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out,
+.leaflet-control-attribution {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 }
