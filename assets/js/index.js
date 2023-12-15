@@ -56,42 +56,24 @@ const LeafSmallIcon = LeafBaseIcon.extend({
 })
 
 const metroIcons = {
-    "default": new LeafSmallIcon(),
-    "1": new LeafIcon({iconUrl: 'assets/line_icons/1.png'}), // Change 'iconurl' to 'iconUrl'
-    "2": new LeafIcon({iconUrl: 'assets/line_icons/2.png'}),
-    "3": new LeafIcon({iconUrl: 'assets/line_icons/3.png'}),
-    "3bis": new LeafIcon({iconUrl: 'assets/line_icons/3bis.png'}),
-    "4": new LeafIcon({iconUrl: 'assets/line_icons/4.png'}),
-    "5": new LeafIcon({iconUrl: 'assets/line_icons/5.png'}),
-    "6": new LeafIcon({iconUrl: 'assets/line_icons/6.png'}),
-    "7": new LeafIcon({iconUrl: 'assets/line_icons/7.png'}),
-    "7bis": new LeafIcon({iconUrl: 'assets/line_icons/7bis.png'}),
-    "8": new LeafIcon({iconUrl: 'assets/line_icons/8.png'}),
-    "9": new LeafIcon({iconUrl: 'assets/line_icons/9.png'}),
-    "10": new LeafIcon({iconUrl: 'assets/line_icons/10.png'}),
-    "11": new LeafIcon({iconUrl: 'assets/line_icons/11.png'}),
-    "12": new LeafIcon({iconUrl: 'assets/line_icons/12.png'}),
-    "13": new LeafIcon({iconUrl: 'assets/line_icons/13.png'}),
-    "14": new LeafIcon({iconUrl: 'assets/line_icons/14.png'}),
+    "default": "assets/line_icons/default.png",
+    "1": "assets/line_icons/1.png",
+    "2": "assets/line_icons/2.png",
+    "3": "assets/line_icons/3.png",
+    "3bis": "assets/line_icons/3bis.png",
+    "4": "assets/line_icons/4.png",
+    "5": "assets/line_icons/5.png",
+    "6": "assets/line_icons/6.png",
+    "7": "assets/line_icons/7.png",
+    "7bis": "assets/line_icons/7bis.png",
+    "8": "assets/line_icons/8.png",
+    "9": "assets/line_icons/9.png",
+    "10": "assets/line_icons/10.png",
+    "11": "assets/line_icons/11.png",
+    "12": "assets/line_icons/12.png",
+    "13": "assets/line_icons/13.png",
+    "14": "assets/line_icons/14.png"
 };
-
-function getAdditionalMarkerIfStationIsEnd(station, stations) {
-    if (station.is_end === "True") {
-        return LeafLet.marker([station.lat, station.lon], {
-            icon: metroIcons[station.line_number]
-        }).bindPopup(getPopupContentForStation(station, stations));
-    }
-    return null;
-}
-
-function getAdditionalMarkerIfStationIsDuplicate(station, stationsSet, stations) {
-    if (stationsSet.has(station.nom_gares)) {
-        return LeafLet.marker([station.lat, station.lon], {
-            icon: metroIcons["default"]
-        }).bindPopup(getPopupContentForStation(station, stations));
-    }
-    return null;
-}
 
 function getLinesForStation(stationName, stations) {
     return stations
@@ -115,38 +97,76 @@ function getPopupContentForStation(station, stations) {
     `;
 }
 
-function getNormalMarkerForStation(station, stations) {
-    return LeafLet.circleMarker([station.lat, station.lon], {
-        color: getMetroColor(station.line_number),
-        radius: 3,
-        fillOpacity: 1
-    }).bindPopup(getPopupContentForStation(station, stations));
+function getMarkerForOneLineStation(station) {
+    return new google.maps.Marker({
+        position: { lat: station.lat, lng: station.lon },
+        map: map,
+        icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 3,
+            fillColor: getMetroColor(station.line_number),
+            fillOpacity: 1,
+            strokeWeight: 0
+        }
+    });
+}
+
+function getMarkerForMultiLineStation(station, stations) {
+    return new google.maps.Marker({
+        position: { lat: station.lat, lng: station.lon },
+        map: map,
+        icon: {
+            url: 'assets/line_icons/default.png',
+            scaledSize: new google.maps.Size(12, 12)
+        }
+    });
+}
+
+function getAmmountOfLinesForStation(stationName, stations) {
+    return getLinesForStation(stationName, stations).length;
+}
+
+function getMarketBasedOnLines(stationName, station, stations) {
+    const lines = getLinesForStation(stationName, stations);
+    if (lines.length === 1) {
+        return getMarkerForOneLineStation(station);
+    } else {
+        return getMarkerForMultiLineStation(station, stations);
+    }
+}
+
+function getInfoWindow(station, stations) {
+    return new google.maps.InfoWindow({
+        content: getPopupContentForStation(station, stations)
+    });
 }
 
 function addStationsToMap(map, stations) {
-    let stationsSet = new Set();
+    let processedStations = [];
     stations.forEach(station => {
-        let marker = getNormalMarkerForStation(station, stations);
-        marker.addTo(map);
-        let markerIfStationIsEnd = getAdditionalMarkerIfStationIsEnd(station, stations);
-        if (markerIfStationIsEnd)
-            markerIfStationIsEnd.addTo(map);
-        let markerIfStationIsDuplicate = getAdditionalMarkerIfStationIsDuplicate(station, stationsSet, stations);
-        if (markerIfStationIsDuplicate)
-            markerIfStationIsDuplicate.addTo(map);
-        stationsSet.add(station.nom_gares);
+        if (processedStations.includes(station.nom_gares)) return;
+        let marker = getMarketBasedOnLines(station.nom_gares, station, stations);
+        let infoWindow = getInfoWindow(station, stations);
+
+        marker.addListener('click', function() {
+            infoWindow.open(map, marker);
+        });
+        marker.setMap(map);
+
+        processedStations.push(stations.nom_gares);
     });
 }
 
 function getLineBetweenStations(station1, station2) {
-    return LeafLet.polyline([
-        [station1.lat, station1.lon],
-        [station2.lat, station2.lon]
-    ], {
-        color: getMetroColor(station1.line_number),
-        weight: 3,
-        opacity: 1,
-        smoothFactor: 1
+    return new google.maps.Polyline({
+        path: [
+            { lat: station1.lat, lng: station1.lon },
+            { lat: station2.lat, lng: station2.lon }
+        ],
+        geodesic: true,
+        strokeColor: getMetroColor(station1.line_number),
+        strokeOpacity: 1.0,
+        strokeWeight: 3
     });
 }
 
@@ -155,7 +175,8 @@ function addInterconnectionsToMap(map, stations, interconnections) {
         const station1 = stations.find(station => parseInt(station.station_id) === parseInt(liaison.station1));
         const station2 = stations.find(station => parseInt(station.station_id) === parseInt(liaison.station2));
         if (station1 && station2) {
-            getLineBetweenStations(station1, station2).addTo(map);
+            let line = getLineBetweenStations(station1, station2);
+            line.setMap(map);
         }
     });
 }
@@ -165,23 +186,12 @@ async function populateMapWithStationsAndConnections(map, stations, liaisons) {
     addInterconnectionsToMap(map, stations, liaisons);
 }
 
-function getLeafletMap(){
-    const defaultParisCoordinates = [48.864716, 2.349014];
-    const map = LeafLet.map('map').setView(defaultParisCoordinates, 13);
-    LeafLet.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-        maxZoom: 17,
-        minZoom: 11,
-        layers: "H"
-    }).addTo(map);
-    return map;
-}
-
 async function getStations() {
-    return await fetch('https://victor.ait37.fr/descartographie/json/stations.json').then(response => response.json());
+    return await fetch('https://descartographie.ait37.fr/assets/json/stations.json').then(response => response.json());
 }
 
 async function getLiaisons() {
-    return await fetch('https://victor.ait37.fr/descartographie/json/interconnection.json').then(response => response.json());
+    return await fetch('https://descartographie.ait37.fr/assets/json/interconnection.json').then(response => response.json());
 }
 
 function loadStationDatalist(stations) {
@@ -196,7 +206,7 @@ function loadStationDatalist(stations) {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
-    const map = getLeafletMap();
+    const map = getGoogleMap();
     let stations = await getStations();
     let interconnections = await getLiaisons();
     await populateMapWithStationsAndConnections(map, stations, interconnections);
