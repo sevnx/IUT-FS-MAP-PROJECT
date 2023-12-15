@@ -1,6 +1,3 @@
-
-const cors = require("cors");
-
 function getMetroColor(line) {
     switch (line) {
         case "1":
@@ -45,48 +42,38 @@ const LeafIcon = L.Icon.extend({
     options: {
         iconSize: [20, 20],
         iconAnchor: [25, 25],
-        iconUrl: 'line_icons/default.png' // Add this line
+        iconUrl: 'assets/line_icons/default.png' // Add this line
     }
 });
 
 const LeafSmallIcon = L.Icon.extend({
     options: {
         iconSize: [10, 10],
-        iconUrl: 'line_icons/default.png' // Add this line
+        iconUrl: 'assets/line_icons/default.png' // Add this line
     }
 })
 
-var metroIcons = {
+const metroIcons = {
     "default": new LeafSmallIcon(),
-    "1": new LeafIcon({iconUrl: 'line_icons/1.png'}), // Change 'iconurl' to 'iconUrl'
-    "2": new LeafIcon({iconUrl: 'line_icons/2.png'}),
-    "3": new LeafIcon({iconUrl: 'line_icons/3.png'}),
-    "3bis": new LeafIcon({iconUrl: 'line_icons/3bis.png'}),
-    "4": new LeafIcon({iconUrl: 'line_icons/4.png'}),
-    "5": new LeafIcon({iconUrl: 'line_icons/5.png'}),
-    "6": new LeafIcon({iconUrl: 'line_icons/6.png'}),
-    "7": new LeafIcon({iconUrl: 'line_icons/7.png'}),
-    "7bis": new LeafIcon({iconUrl: 'line_icons/7bis.png'}),
-    "8": new LeafIcon({iconUrl: 'line_icons/8.png'}),
-    "9": new LeafIcon({iconUrl: 'line_icons/9.png'}),
-    "10": new LeafIcon({iconUrl: 'line_icons/10.png'}),
-    "11": new LeafIcon({iconUrl: 'line_icons/11.png'}),
-    "12": new LeafIcon({iconUrl: 'line_icons/12.png'}),
-    "13": new LeafIcon({iconUrl: 'line_icons/13.png'}),
-    "14": new LeafIcon({iconUrl: 'line_icons/14.png'}),
-}
+    "1": new LeafIcon({iconUrl: 'assets/line_icons/1.png'}), // Change 'iconurl' to 'iconUrl'
+    "2": new LeafIcon({iconUrl: 'assets/line_icons/2.png'}),
+    "3": new LeafIcon({iconUrl: 'assets/line_icons/3.png'}),
+    "3bis": new LeafIcon({iconUrl: 'assets/line_icons/3bis.png'}),
+    "4": new LeafIcon({iconUrl: 'assets/line_icons/4.png'}),
+    "5": new LeafIcon({iconUrl: 'assets/line_icons/5.png'}),
+    "6": new LeafIcon({iconUrl: 'assets/line_icons/6.png'}),
+    "7": new LeafIcon({iconUrl: 'assets/line_icons/7.png'}),
+    "7bis": new LeafIcon({iconUrl: 'assets/line_icons/7bis.png'}),
+    "8": new LeafIcon({iconUrl: 'assets/line_icons/8.png'}),
+    "9": new LeafIcon({iconUrl: 'assets/line_icons/9.png'}),
+    "10": new LeafIcon({iconUrl: 'assets/line_icons/10.png'}),
+    "11": new LeafIcon({iconUrl: 'assets/line_icons/11.png'}),
+    "12": new LeafIcon({iconUrl: 'assets/line_icons/12.png'}),
+    "13": new LeafIcon({iconUrl: 'assets/line_icons/13.png'}),
+    "14": new LeafIcon({iconUrl: 'assets/line_icons/14.png'}),
+};
 
-async function populateMapWithStationsAndConnections(map) {
-    // Fetch the stations.json file
-    const responseStations = await fetch('https://victor.ait37.fr/descartographie/json/stations.json');
-    const stations = await responseStations.json();
-
-    // Fetch the liaisons.json file
-    const responseLiaisons = await fetch('https://victor.ait37.fr/descartographie/json/liaisons.json');
-    const liaisons = await responseLiaisons.json();
-
-    // Iterate over each station
-    // Iterate over each station
+async function populateMapWithStationsAndConnections(map, stations, liaisons) {
     let stationsSet = new Set();
     stations.forEach(station => {
         // Create a circle marker for the station
@@ -145,13 +132,43 @@ async function populateMapWithStationsAndConnections(map) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    const map = L.map('map').setView([48.864716, 2.349014], 13);
+function getLeafletMap(){
+    const defaultParisCoordinates = [48.864716, 2.349014];
+    const map = L.map('map').setView(defaultParisCoordinates, 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-minZoom: 12,
+        minZoom: 12,
     }).addTo(map);
+    return map;
+}
 
-    // Call the function to populate the map with stations and connections
-    populateMapWithStationsAndConnections(map);
+async function getStations() {
+    return await fetch('https://victor.ait37.fr/descartographie/json/stations.json').then(response => response.json());
+}
+
+async function getLiaisons() {
+    return await fetch('https://victor.ait37.fr/descartographie/json/interconnection.json').then(response => response.json());
+}
+
+function loadStationDatalist(stations) {
+    const datalist = document.getElementById("stations");
+    let stationsSet = new Set();
+    stations.forEach(station => {
+        if (stationsSet.has(station.nom_gares)) {
+            return;
+        }
+        const option = document.createElement("option");
+        option.value = station.station_id;
+        option.innerHTML = station.nom_gares;
+        datalist.appendChild(option);
+        stationsSet.add(station.nom_gares);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", async function() {
+    const map = getLeafletMap();
+    let stations = await getStations();
+    let interconnections = await getLiaisons();
+    await populateMapWithStationsAndConnections(map, stations, interconnections);
+    loadStationDatalist(stations);
 });
