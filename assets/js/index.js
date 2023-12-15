@@ -37,8 +37,10 @@ function getMetroColor(line) {
     }
 }
 
+const LeafLet = window.L;
+const LeafBaseIcon = LeafLet.Icon;
 
-const LeafIcon = L.Icon.extend({
+const LeafIcon = LeafBaseIcon.extend({
     options: {
         iconSize: [20, 20],
         iconAnchor: [25, 25],
@@ -46,7 +48,7 @@ const LeafIcon = L.Icon.extend({
     }
 });
 
-const LeafSmallIcon = L.Icon.extend({
+const LeafSmallIcon = LeafBaseIcon.extend({
     options: {
         iconSize: [10, 10],
         iconUrl: 'assets/line_icons/default.png' // Add this line
@@ -73,72 +75,101 @@ const metroIcons = {
     "14": new LeafIcon({iconUrl: 'assets/line_icons/14.png'}),
 };
 
-async function populateMapWithStationsAndConnections(map, stations, liaisons) {
+function getAdditionalMarkerIfStationIsEnd(station, stations) {
+    if (station.is_end === "True") {
+        return LeafLet.marker([station.lat, station.lon], {
+            icon: metroIcons[station.line_number]
+        }).bindPopup(getPopupContentForStation(station, stations));
+    }
+    return null;
+}
+
+function getAdditionalMarkerIfStationIsDuplicate(station, stationsSet, stations) {
+    if (stationsSet.has(station.nom_gares)) {
+        return LeafLet.marker([station.lat, station.lon], {
+            icon: metroIcons["default"]
+        }).bindPopup(getPopupContentForStation(station, stations));
+    }
+    return null;
+}
+
+function getLinesForStation(stationName, stations) {
+    return stations
+        .filter(station => station.nom_gares === stationName)
+        .map(station => station.line_number);
+}
+
+function getPopupContentForStation(station, stations) {
+    const lines = getLinesForStation(station.nom_gares, stations);
+    let linesHTML = '';
+    lines.forEach(line => {
+        linesHTML += `<img src="assets/line_icons/${line}.png" alt="Line ${line} icon" width="20" height="20" style="margin-right: 5px">`;
+    });
+    return `
+    <div style="display: flex;align-items: center">
+    <div class="metro-station-lines">
+    ${linesHTML}
+    </div>
+    <strong>${station.nom_gares}</strong>
+    </div>
+    `;
+}
+
+function getNormalMarkerForStation(station, stations) {
+    return LeafLet.circleMarker([station.lat, station.lon], {
+        color: getMetroColor(station.line_number),
+        radius: 3,
+        fillOpacity: 1
+    }).bindPopup(getPopupContentForStation(station, stations));
+}
+
+function addStationsToMap(map, stations) {
     let stationsSet = new Set();
     stations.forEach(station => {
-        // Create a circle marker for the station
-        let marker = L.circleMarker([station.lat, station.lon], {
-            radius: 3,
-            color: getMetroColor(station.line_number),
-            fillOpacity: 1
-        })
-        const stationInfo = `
-        <strong>Station ID:</strong> ${station.station_id}<br>
-        <strong>Name:</strong> ${station.nom_gares}<br>
-        <strong>Line Number:</strong> ${station.line_number}<br>
-        <strong>Is End:</strong> ${station.is_end}<br>
-        <strong>Connection:</strong> ${station.connection}
-        `;
-        marker.bindPopup(stationInfo);
+        let marker = getNormalMarkerForStation(station, stations);
         marker.addTo(map);
-
-        if (stationsSet.has(station.nom_gares)) {
-            let additionalMarker = L.marker([station.lat, station.lon], {
-                icon: metroIcons["default"]
-            })
-            additionalMarker.bindPopup(stationInfo);
-            additionalMarker.addTo(map);
-        } 
-        
-        if (station.is_end === "True") {
-            let additionalMarker = L.marker([station.lat, station.lon], {
-                icon: metroIcons[station.line_number]
-            })
-            additionalMarker.bindPopup(stationInfo);
-            additionalMarker.addTo(map);
-        }
-
+        let markerIfStationIsEnd = getAdditionalMarkerIfStationIsEnd(station, stations);
+        if (markerIfStationIsEnd)
+            markerIfStationIsEnd.addTo(map);
+        let markerIfStationIsDuplicate = getAdditionalMarkerIfStationIsDuplicate(station, stationsSet, stations);
+        if (markerIfStationIsDuplicate)
+            markerIfStationIsDuplicate.addTo(map);
         stationsSet.add(station.nom_gares);
     });
+}
 
-    // Iterate over each liaison
-    liaisons.forEach(liaison => {
-        // Find the stations in the stations array that correspond to station1 and station2
+function getLineBetweenStations(station1, station2) {
+    return LeafLet.polyline([
+        [station1.lat, station1.lon],
+        [station2.lat, station2.lon]
+    ], {
+        color: getMetroColor(station1.line_number),
+        weight: 3,
+        opacity: 1,
+        smoothFactor: 1
+    });
+}
+
+function addInterconnectionsToMap(map, stations, interconnections) {
+    interconnections.forEach(liaison => {
         const station1 = stations.find(station => parseInt(station.station_id) === parseInt(liaison.station1));
         const station2 = stations.find(station => parseInt(station.station_id) === parseInt(liaison.station2));
-        console.log(station1);
-        // Check if both stations were found
         if (station1 && station2) {
-            // Create a polyline for the liaison
-            var polyline = L.polyline([
-                [station1.lat, station1.lon],
-                [station2.lat, station2.lon]
-            ], {
-                color: getMetroColor(station1.line_number),
-                weight: 3,
-                opacity: 1,
-                smoothFactor: 1
-            });
-            polyline.addTo(map);
+            getLineBetweenStations(station1, station2).addTo(map);
         }
     });
 }
 
+async function populateMapWithStationsAndConnections(map, stations, liaisons) {
+    addStationsToMap(map, stations);
+    addInterconnectionsToMap(map, stations, liaisons);
+}
+
 function getLeafletMap(){
     const defaultParisCoordinates = [48.864716, 2.349014];
-    const map = L.map('map').setView(defaultParisCoordinates, 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-        maxZoom: 19,
+    const map = LeafLet.map('map').setView(defaultParisCoordinates, 13);
+    LeafLet.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        maxZoom: 17,
         minZoom: 11,
         layers: "H"
     }).addTo(map);
@@ -157,12 +188,8 @@ function loadStationDatalist(stations) {
     const datalist = document.getElementById("stations");
     let stationsSet = new Set();
     stations.forEach(station => {
-        if (stationsSet.has(station.nom_gares)) {
-            return;
-        }
         const option = document.createElement("option");
-        option.value = station.station_id;
-        option.innerHTML = station.nom_gares;
+        option.value = station.line_number + " - " + station.nom_gares;
         datalist.appendChild(option);
         stationsSet.add(station.nom_gares);
     });
