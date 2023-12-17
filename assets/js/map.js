@@ -1,73 +1,59 @@
 const myStyles = [
     {
-        featureType: "poi",
-        elementType: "labels",
-        stylers: [
-            {visibility: "off"}
+        "featureType": "all",
+        "elementType": "labels",
+        "stylers": [{"visibility": "off"}]
+    },
+    {
+        "featureType": "administrative",
+        "elementType": "all",
+        "stylers": [
+        {
+            "visibility": "off"
+        }
         ]
     },
-    {elementType: "geometry", stylers: [{color: "#1A1A1A"}]},
+    {
+        "featureType": "administrative.locality",
+        "elementType": "labels",
+        "stylers": [
+        {
+            "visibility": "simplified"
+        }
+        ]
+    },
+    {elementType: "geometry", stylers: [{color: "#1A1A1A"}]}, 
     {elementType: "labels.text.stroke", stylers: [{color: "#000000"}]},
     {elementType: "labels.text.fill", stylers: [{color: "#FFFFFF"}]},
     {
-        featureType: "administrative.locality",
-        elementType: "labels.text.fill",
-        stylers: [{color: "#d59563"}],
-    },
-    {
-        featureType: "poi",
-        elementType: "labels.text.fill",
-        stylers: [{color: "#d59563"}],
-    },
-    {
-        featureType: "poi.park",
-        elementType: "geometry",
-        stylers: [{color: "#000000"}],
-    },
-    {
-        featureType: "poi.park",
-        elementType: "labels.text.fill",
-        stylers: [{color: "#6b9a76"}],
-    },
-    {
         featureType: "road",
         elementType: "geometry",
-        stylers: [{color: "#38414e"}],
-    },
-    {
-        featureType: "road",
-        elementType: "geometry.stroke",
-        stylers: [{color: "#212a37"}],
-    },
-    {
-        featureType: "road",
-        elementType: "labels.text.fill",
-        stylers: [{color: "#9ca5b3"}],
+        stylers: [{color: "#38414e", "visibility": "simplified"}],
     },
     {
         featureType: "road.highway",
         elementType: "geometry",
-        stylers: [{color: "#746855"}],
+        "stylers": [{"visibility": "off"}]
     },
     {
         featureType: "road.highway",
         elementType: "geometry.stroke",
-        stylers: [{color: "#1f2835"}],
+        "stylers": [{"visibility": "off"}]
     },
     {
         featureType: "road.highway",
         elementType: "labels.text.fill",
-        stylers: [{color: "#f3d19c"}],
+        "stylers": [{"visibility": "off"}]
     },
     {
         featureType: "transit",
         elementType: "geometry",
-        stylers: [{color: "#2f3948"}],
+        "stylers": [{"visibility": "off"}]
     },
     {
         featureType: "transit.station",
         elementType: "labels.text.fill",
-        stylers: [{color: "#d59563"}],
+        "stylers": [{"visibility": "off"}]
     },
     {
         featureType: "water",
@@ -87,18 +73,17 @@ const myStyles = [
 ];
 
 const PARIS_BOUNDS = {
-    north: 59,
-    south: 40,
-    west: -6,
-    east: 10,
+    north: 49,
+    south: 48.7,
+    west: 2,
+    east: 2.8,
 };
 
 function getGoogleMap() {
-    const defaultParisCoordinates = [48.864716, 2.349014];
     return new google.maps.Map(document.getElementById('map'), {
-        zoom: 12.5,
+        zoom: 13,
         maxZoom: 16,
-        minZoom: 12.5,
+        minZoom: 11,
         restriction: {
             latLngBounds: PARIS_BOUNDS,
             strictBounds: false,
@@ -108,6 +93,6 @@ function getGoogleMap() {
         fullscreenControl: false,
         backgroundColor: "1A1A1A",
         styles: myStyles,
-        disableDefaultUI: true
+        disableDefaultUI: true,
     });
 }

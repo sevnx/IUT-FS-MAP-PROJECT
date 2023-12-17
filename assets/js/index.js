@@ -1,3 +1,74 @@
+const defaultParisCoordinates = [48.855, 2.32];
+var map;
+let firstSelect;
+let secondSelect;
+let isMapSatellite = false;
+
+function initSelect() {
+    firstSelect = {
+        station:null,
+        marker: {
+            current:null,
+            initialIcon:null
+        }
+    };
+    secondSelect = {
+        station:null,
+        marker: {
+            current:null,
+            initialIcon:null
+        }
+    };
+}
+document.addEventListener("DOMContentLoaded", async function() {
+    initSelect()
+    map = getGoogleMap();
+    defineActionButtons();
+    let stations = await getStations();
+    let interconnections = await getLiaisons();
+    await populateMapWithStationsAndConnections(map, stations, interconnections);
+    loadStationDatalist(stations);
+
+    var isActive = false
+    setInterval(() => {
+        if(firstSelect.station){
+            firstSelect.marker.current.setIcon(
+                {
+                    url: 'assets/line_icons/' + (!isActive ? 'corresp' : 'selected') + '.png',
+                    scaledSize: new google.maps.Size(12, 12),
+                    anchor: new google.maps.Point(5, 6)
+            })
+        }
+        if(secondSelect.station){
+            secondSelect.marker.current.setIcon(
+                {
+                    url: 'assets/line_icons/' + (isActive ? 'corresp' : 'selected') + '.png',
+                    scaledSize: new google.maps.Size(12, 12),
+                    anchor: new google.maps.Point(5, 6)
+            })
+        }
+        isActive = !isActive
+    }, 500);
+});
+
+function defineActionButtons() {
+    document.getElementById("zoomInBtn").addEventListener('click', () => {
+        map.setZoom(map.getZoom() + 1)
+    })
+    document.getElementById("zoomOutBtn").addEventListener('click', () => {
+        map.setZoom(map.getZoom() - 1)
+    })
+    document.getElementById("returnToCenter").addEventListener('click', () => {
+        map.setCenter(new google.maps.LatLng(...defaultParisCoordinates))
+        map.setZoom(13)
+    })
+
+    document.getElementById("layerBtn").addEventListener('click', () => {
+        map.setMapTypeId(isMapSatellite ? "roadmap" : "satellite")
+        isMapSatellite = !isMapSatellite
+    })
+}
+
 function getMetroColor(line) {
     switch (line) {
         case "1":
@@ -37,44 +108,6 @@ function getMetroColor(line) {
     }
 }
 
-const LeafLet = window.L;
-const LeafBaseIcon = LeafLet.Icon;
-
-const LeafIcon = LeafBaseIcon.extend({
-    options: {
-        iconSize: [20, 20],
-        iconAnchor: [25, 25],
-        iconUrl: 'assets/line_icons/default.png' // Add this line
-    }
-});
-
-const LeafSmallIcon = LeafBaseIcon.extend({
-    options: {
-        iconSize: [10, 10],
-        iconUrl: 'assets/line_icons/default.png' // Add this line
-    }
-})
-
-const metroIcons = {
-    "default": "assets/line_icons/default.png",
-    "1": "assets/line_icons/1.png",
-    "2": "assets/line_icons/2.png",
-    "3": "assets/line_icons/3.png",
-    "3bis": "assets/line_icons/3bis.png",
-    "4": "assets/line_icons/4.png",
-    "5": "assets/line_icons/5.png",
-    "6": "assets/line_icons/6.png",
-    "7": "assets/line_icons/7.png",
-    "7bis": "assets/line_icons/7bis.png",
-    "8": "assets/line_icons/8.png",
-    "9": "assets/line_icons/9.png",
-    "10": "assets/line_icons/10.png",
-    "11": "assets/line_icons/11.png",
-    "12": "assets/line_icons/12.png",
-    "13": "assets/line_icons/13.png",
-    "14": "assets/line_icons/14.png"
-};
-
 function getLinesForStation(stationName, stations) {
     return stations
         .filter(station => station.nom_gares === stationName)
@@ -98,16 +131,25 @@ function getPopupContentForStation(station, stations) {
 }
 
 function getMarkerForOneLineStation(station) {
+    icon = {
+        url: 'assets/line_icons/empty'+station.line_number +'.png',
+        scaledSize: new google.maps.Size(7, 7),
+        anchor: new google.maps.Point(3, 4)
+    }
+
+    if(station.is_end == "True"){
+        icon = {
+            url: 'assets/line_icons/' +station.line_number +'.png',
+            scaledSize: new google.maps.Size(14, 14),
+            anchor: new google.maps.Point(7, 7)
+        }
+    }
+
     return new google.maps.Marker({
         position: { lat: station.lat, lng: station.lon },
         map: map,
-        icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 3,
-            fillColor: getMetroColor(station.line_number),
-            fillOpacity: 1,
-            strokeWeight: 0
-        }
+        // animation: google.maps.Animation.DROP,
+        icon: icon
     });
 }
 
@@ -115,9 +157,11 @@ function getMarkerForMultiLineStation(station, stations) {
     return new google.maps.Marker({
         position: { lat: station.lat, lng: station.lon },
         map: map,
+        // animation: google.maps.Animation.DROP,
         icon: {
-            url: 'assets/line_icons/default.png',
-            scaledSize: new google.maps.Size(12, 12)
+            url: 'assets/line_icons/corresp.png',
+            scaledSize: new google.maps.Size(9, 9),
+            anchor: new google.maps.Point(4, 4)
         }
     });
 }
@@ -126,7 +170,7 @@ function getAmmountOfLinesForStation(stationName, stations) {
     return getLinesForStation(stationName, stations).length;
 }
 
-function getMarketBasedOnLines(stationName, station, stations) {
+function getMarkerBasedOnLines(stationName, station, stations) {
     const lines = getLinesForStation(stationName, stations);
     if (lines.length === 1) {
         return getMarkerForOneLineStation(station);
@@ -141,18 +185,70 @@ function getInfoWindow(station, stations) {
     });
 }
 
+var infoWindow = null;
+
 function addStationsToMap(map, stations) {
     let processedStations = [];
     stations.forEach(station => {
         if (processedStations.includes(station.nom_gares)) return;
-        let marker = getMarketBasedOnLines(station.nom_gares, station, stations);
-        let infoWindow = getInfoWindow(station, stations);
+        // setTimeout(() => {
+            let marker = getMarkerBasedOnLines(station.nom_gares, station, stations)
 
-        marker.addListener('click', function() {
-            infoWindow.open(map, marker);
-        });
-        marker.setMap(map);
+            marker.addListener('click', function(e) {                        
 
+                if(firstSelect.station && secondSelect.station){
+                    firstSelect.marker.current.setIcon(firstSelect.marker.initialIcon)
+                    secondSelect.marker.current.setIcon(secondSelect.marker.initialIcon)
+                    initSelect()
+                    document.getElementById("departure").value = ""
+                    document.getElementById("arrival").value = ""
+                }
+
+
+                if(firstSelect.station && !secondSelect.station){
+                    secondSelect = {
+                        station:station,
+                        marker: {
+                            current:marker,
+                            initialIcon:marker.getIcon()
+                        }
+                    };
+                    document.getElementById("arrival").value = secondSelect.station.nom_gares
+                }else{
+                    firstSelect = {
+                        station:station,
+                        marker: {
+                            current:marker,
+                            initialIcon:marker.getIcon()
+                        }
+                    };
+                    document.getElementById("departure").value = firstSelect.station.nom_gares
+                }
+
+                marker.setIcon({
+                    url: 'assets/line_icons/selected.png',
+                    scaledSize: new google.maps.Size(12, 12),
+                    anchor: new google.maps.Point(5, 6)
+                });
+                marker.setZIndex(900) 
+            });
+  
+            
+            marker.addListener('mouseover', function() {
+                if (infoWindow)
+                    infoWindow.close();
+                
+                infoWindow = getInfoWindow(station, stations);
+                infoWindow.open(map, marker);
+            });
+
+            marker.addListener('mouseout', function() {
+                if (infoWindow)
+                    infoWindow.close();
+            });
+
+            marker.setMap(map);
+        // }, 10*processedStations.length);
         processedStations.push(stations.nom_gares);
     });
 }
@@ -205,10 +301,34 @@ function loadStationDatalist(stations) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", async function() {
-    const map = getGoogleMap();
-    let stations = await getStations();
-    let interconnections = await getLiaisons();
-    await populateMapWithStationsAndConnections(map, stations, interconnections);
-    loadStationDatalist(stations);
-});
+
+
+
+
+
+function onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId());
+
+    var name = profile.getName();
+    var email = profile.getEmail();
+
+    userDataToBack(profile.getId(), name, email);
+}
+
+function userDataToBack(id, name, email) {
+    var xhr = new XMLHttpRequest();
+    var url = 'https://descartographie.ait37.fr/login.php';
+    var params = 'id=' + id + '&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email);
+    
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            console.log(xhr.responseText); // à tester
+        }
+    };
+
+    xhr.send(params);
+}
