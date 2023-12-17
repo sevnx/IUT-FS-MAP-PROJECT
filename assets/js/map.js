@@ -33,12 +33,12 @@ const myStyles = [
     {
         featureType: "road.highway",
         elementType: "geometry",
-        "stylers": [{"visibility": "off"}]
+        "stylers": [{"visibility": "on"}]
     },
     {
         featureType: "road.highway",
         elementType: "geometry.stroke",
-        "stylers": [{"visibility": "off"}]
+        "stylers": [{"visibility": "on"}]
     },
     {
         featureType: "road.highway",

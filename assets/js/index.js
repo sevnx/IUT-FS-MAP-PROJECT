@@ -1,10 +1,18 @@
 const defaultParisCoordinates = [48.855, 2.32];
-var map;
+let map;
 let firstSelect;
 let secondSelect;
 let isMapSatellite = false;
 
-function initSelect() {
+function getBlinkingIcon(isActive){
+    return {
+        url: 'assets/line_icons/' + (isActive ? 'corresp' : 'selected') + '.png',
+        scaledSize: new google.maps.Size(12, 12),
+        anchor: new google.maps.Point(5, 6)
+    }
+}
+
+function initStationSelection() {
     firstSelect = {
         station:null,
         marker: {
@@ -20,32 +28,30 @@ function initSelect() {
         }
     };
 }
+
+async function getStations() {
+    return await fetch('https://descartographie.ait37.fr/assets/json/stations.json').then(response => response.json());
+}
+
+async function getInterconnections() {
+    return await fetch('https://descartographie.ait37.fr/assets/json/interconnection.json').then(response => response.json());
+}
+
 document.addEventListener("DOMContentLoaded", async function() {
-    initSelect()
+    initStationSelection()
     map = getGoogleMap();
     defineActionButtons();
     let stations = await getStations();
-    let interconnections = await getLiaisons();
-    await populateMapWithStationsAndConnections(map, stations, interconnections);
-    loadStationDatalist(stations);
+    let interconnections = await getInterconnections();
+    await loadMetro(map, stations, interconnections);
 
-    var isActive = false
+    let isActive = false;
     setInterval(() => {
-        if(firstSelect.station){
-            firstSelect.marker.current.setIcon(
-                {
-                    url: 'assets/line_icons/' + (!isActive ? 'corresp' : 'selected') + '.png',
-                    scaledSize: new google.maps.Size(12, 12),
-                    anchor: new google.maps.Point(5, 6)
-            })
+        if(firstSelect.station) {
+            firstSelect.marker.current.setIcon(getBlinkingIcon(isActive))
         }
-        if(secondSelect.station){
-            secondSelect.marker.current.setIcon(
-                {
-                    url: 'assets/line_icons/' + (isActive ? 'corresp' : 'selected') + '.png',
-                    scaledSize: new google.maps.Size(12, 12),
-                    anchor: new google.maps.Point(5, 6)
-            })
+        if(secondSelect.station) {
+            secondSelect.marker.current.setIcon(getBlinkingIcon(isActive))
         }
         isActive = !isActive
     }, 500);
@@ -62,7 +68,6 @@ function defineActionButtons() {
         map.setCenter(new google.maps.LatLng(...defaultParisCoordinates))
         map.setZoom(13)
     })
-
     document.getElementById("layerBtn").addEventListener('click', () => {
         map.setMapTypeId(isMapSatellite ? "roadmap" : "satellite")
         isMapSatellite = !isMapSatellite
@@ -130,21 +135,22 @@ function getPopupContentForStation(station, stations) {
     `;
 }
 
-function getMarkerForOneLineStation(station) {
-    icon = {
-        url: 'assets/line_icons/empty'+station.line_number +'.png',
-        scaledSize: new google.maps.Size(7, 7),
-        anchor: new google.maps.Point(3, 4)
-    }
+/** MARKERS **/
 
-    if(station.is_end == "True"){
+function getMarkerForOneLineStation(station) {
+    if (station.is_end === "False") {
+        icon = {
+            url: 'assets/line_icons/empty' + station.line_number + '.png',
+            scaledSize: new google.maps.Size(7, 7),
+            anchor: new google.maps.Point(3, 4)
+        }
+    } else {
         icon = {
             url: 'assets/line_icons/' +station.line_number +'.png',
             scaledSize: new google.maps.Size(14, 14),
             anchor: new google.maps.Point(7, 7)
         }
     }
-
     return new google.maps.Marker({
         position: { lat: station.lat, lng: station.lon },
         map: map,
@@ -153,7 +159,7 @@ function getMarkerForOneLineStation(station) {
     });
 }
 
-function getMarkerForMultiLineStation(station, stations) {
+function getMarkerForMultiLineStation(station) {
     return new google.maps.Marker({
         position: { lat: station.lat, lng: station.lon },
         map: map,
@@ -166,11 +172,7 @@ function getMarkerForMultiLineStation(station, stations) {
     });
 }
 
-function getAmmountOfLinesForStation(stationName, stations) {
-    return getLinesForStation(stationName, stations).length;
-}
-
-function getMarkerBasedOnLines(stationName, station, stations) {
+function getStationMarker(stationName, station, stations) {
     const lines = getLinesForStation(stationName, stations);
     if (lines.length === 1) {
         return getMarkerForOneLineStation(station);
@@ -179,79 +181,114 @@ function getMarkerBasedOnLines(stationName, station, stations) {
     }
 }
 
+/** UTILITY FOR STATION SELECTION **/
+
+function clearInputValues() {
+    document.getElementById("departure").value = "";
+    document.getElementById("arrival").value = "";
+}
+
+function resetMarkersToInitial() {
+    firstSelect.marker.current.setIcon(firstSelect.marker.initialIcon)
+    secondSelect.marker.current.setIcon(secondSelect.marker.initialIcon)
+}
+
+function getSelectedIcon(){
+    return {
+        url: 'assets/line_icons/selected.png',
+        scaledSize: new google.maps.Size(12, 12),
+        anchor: new google.maps.Point(5, 6)
+    }
+}
+
+function setSelect(station, marker) {
+    return {
+        station:station,
+        marker: {
+            current:marker,
+            initialIcon:marker.getIcon()
+        }
+    }
+}
+
+/** STATION INFO WINDOW **/
+
+let stationInfoWindow = null;
+function closeCurrentStationInfoWindow() {
+    if (stationInfoWindow)
+        stationInfoWindow.close();
+}
+
 function getInfoWindow(station, stations) {
     return new google.maps.InfoWindow({
         content: getPopupContentForStation(station, stations)
     });
 }
 
-var infoWindow = null;
+/** STATION ADDING **/
 
-function addStationsToMap(map, stations) {
-    let processedStations = [];
-    stations.forEach(station => {
-        if (processedStations.includes(station.nom_gares)) return;
-        // setTimeout(() => {
-            let marker = getMarkerBasedOnLines(station.nom_gares, station, stations)
+let stationMap = new Map();
 
-            marker.addListener('click', function(e) {                        
-
-                if(firstSelect.station && secondSelect.station){
-                    firstSelect.marker.current.setIcon(firstSelect.marker.initialIcon)
-                    secondSelect.marker.current.setIcon(secondSelect.marker.initialIcon)
-                    initSelect()
-                    document.getElementById("departure").value = ""
-                    document.getElementById("arrival").value = ""
-                }
-
-
-                if(firstSelect.station && !secondSelect.station){
-                    secondSelect = {
-                        station:station,
-                        marker: {
-                            current:marker,
-                            initialIcon:marker.getIcon()
-                        }
-                    };
-                    document.getElementById("arrival").value = secondSelect.station.nom_gares
-                }else{
-                    firstSelect = {
-                        station:station,
-                        marker: {
-                            current:marker,
-                            initialIcon:marker.getIcon()
-                        }
-                    };
-                    document.getElementById("departure").value = firstSelect.station.nom_gares
-                }
-
-                marker.setIcon({
-                    url: 'assets/line_icons/selected.png',
-                    scaledSize: new google.maps.Size(12, 12),
-                    anchor: new google.maps.Point(5, 6)
-                });
-                marker.setZIndex(900) 
-            });
-  
-            
-            marker.addListener('mouseover', function() {
-                if (infoWindow)
-                    infoWindow.close();
-                
-                infoWindow = getInfoWindow(station, stations);
-                infoWindow.open(map, marker);
-            });
-
-            marker.addListener('mouseout', function() {
-                if (infoWindow)
-                    infoWindow.close();
-            });
-
-            marker.setMap(map);
-        // }, 10*processedStations.length);
-        processedStations.push(stations.nom_gares);
+function addStationToStations(station) {
+    stationMap.set(parseInt(station.station_id), {
+        lat: station.lat,
+        lon: station.lon,
+        name: station.nom_gares,
+        line: station.line_number,
+        connection: station.connection,
+        adjacentStations: []
     });
 }
+
+function addStationToMap(map, station, stations) {
+    let marker = getStationMarker(station.nom_gares, station, stations);
+    marker.addListener('click', function() {
+        if(firstSelect.station && secondSelect.station){
+            resetMarkersToInitial()
+            initStationSelection()
+            clearInputValues()
+        }
+        if (firstSelect.station) {
+            secondSelect = setSelect(station, marker)
+            document.getElementById("arrival").value = secondSelect.station.nom_gares
+        } else {
+            firstSelect = setSelect(station, marker)
+            document.getElementById("departure").value = firstSelect.station.nom_gares
+        }
+        marker.setIcon(getSelectedIcon())
+        marker.setZIndex(900)
+    });
+    marker.addListener('mouseover', function() {
+        closeCurrentStationInfoWindow();
+        stationInfoWindow = getInfoWindow(station, stations);
+        stationInfoWindow.open(map, marker);
+    });
+    marker.addListener('mouseout', function() {
+        closeCurrentStationInfoWindow();
+    });
+    marker.setMap(map);
+}
+
+function addStationToDataList(station) {
+    const datalist = document.getElementById("stations");
+    const option = document.createElement("option");
+    option.value = station.line_number + " - " + station.nom_gares;
+    datalist.appendChild(option);
+}
+
+function addStationsToApp(map, stations) {
+    let stationNames = new Set();
+    stations.forEach(station => {
+        if (!stationNames.has(station.nom_gares)) {
+            stationNames.add(station.nom_gares);
+            addStationToMap(map, station, stations);
+        }
+        addStationToStations(station);
+        addStationToDataList(station);
+    });
+}
+
+/** INTERCONNECTION ADDING **/
 
 function getLineBetweenStations(station1, station2) {
     return new google.maps.Polyline({
@@ -260,51 +297,42 @@ function getLineBetweenStations(station1, station2) {
             { lat: station2.lat, lng: station2.lon }
         ],
         geodesic: true,
-        strokeColor: getMetroColor(station1.line_number),
+        strokeColor: getMetroColor(station1.line),
         strokeOpacity: 1.0,
         strokeWeight: 3
     });
 }
 
-function addInterconnectionsToMap(map, stations, interconnections) {
-    interconnections.forEach(liaison => {
-        const station1 = stations.find(station => parseInt(station.station_id) === parseInt(liaison.station1));
-        const station2 = stations.find(station => parseInt(station.station_id) === parseInt(liaison.station2));
-        if (station1 && station2) {
-            let line = getLineBetweenStations(station1, station2);
-            line.setMap(map);
-        }
+function addInterconnectionToStationMap(interconnection) {
+    stationMap.get(parseInt(interconnection.station1)).adjacentStations.push({
+        station: parseInt(interconnection.station2),
+        time: parseInt(interconnection.time_between)
+    });
+    stationMap.get(parseInt(interconnection.station2)).adjacentStations.push({
+        station: parseInt(interconnection.station1),
+        time: parseInt(interconnection.time_between)
     });
 }
 
-async function populateMapWithStationsAndConnections(map, stations, liaisons) {
-    addStationsToMap(map, stations);
-    addInterconnectionsToMap(map, stations, liaisons);
+function addInterconnectionToMap(map, interconnection) {
+    const station1 = stationMap.get(parseInt(interconnection.station1));
+    const station2 = stationMap.get(parseInt(interconnection.station2));
+    getLineBetweenStations(station1, station2).setMap(map);
 }
 
-async function getStations() {
-    return await fetch('https://descartographie.ait37.fr/assets/json/stations.json').then(response => response.json());
-}
-
-async function getLiaisons() {
-    return await fetch('https://descartographie.ait37.fr/assets/json/interconnection.json').then(response => response.json());
-}
-
-function loadStationDatalist(stations) {
-    const datalist = document.getElementById("stations");
-    let stationsSet = new Set();
-    stations.forEach(station => {
-        const option = document.createElement("option");
-        option.value = station.line_number + " - " + station.nom_gares;
-        datalist.appendChild(option);
-        stationsSet.add(station.nom_gares);
+function addInterconnectionsToApp(map, stations, interconnections) {
+    interconnections.forEach(interconnection => {
+        addInterconnectionToStationMap(interconnection);
+        addInterconnectionToMap(map, interconnection);
     });
 }
 
+async function loadMetro(map, stations, liaisons) {
+    addStationsToApp(map, stations);
+    addInterconnectionsToApp(map, stations, liaisons);
+}
 
-
-
-
+/** SIGN IN **/
 
 function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
