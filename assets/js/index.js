@@ -12,6 +12,85 @@ function getBlinkingIcon(isActive){
     }
 }
 
+function getStationIdsFromName(stationName){
+    return [...stationMap.keys()].filter(id => stationMap.get(id).name === stationName)
+}
+
+function getDirectionOfLinePath(start, end, line) {
+    start = stationMap.get(start);
+    end = stationMap.get(end);
+    let startLine = stationMap.get(lines.get(line).start[0]);
+    while (startLine !== start && startLine !== end) {
+        let prev = startLine;
+        for (let {station} of startLine.adjacentStations) {
+            if (stationMap.get(station).line === line && station !== prev) {
+                startLine = stationMap.get(station);
+                break;
+            }
+        }
+    }
+    if (startLine === start){
+        return stationMap.get(lines.get(line).end[0]).name;
+    } else {
+        return stationMap.get(lines.get(line).start[0]).name;
+    }
+}
+
+function searchDijkstraPathForInputtedStations() {
+    if (!firstSelect.station){
+        alert("Veuillez sélectionner une station de départ")
+        return;
+    }
+    if (!secondSelect.station){
+        alert("Veuillez sélectionner une station d'arrivée")
+        return;
+    }
+    let departure = document.getElementById("departure").value;
+    let arrival = document.getElementById("arrival").value;
+    let departureIds = getStationIdsFromName(departure);
+    let arrivalIds = getStationIdsFromName(arrival);
+    if (departureIds.length === 0){
+        alert("La station de départ n'existe pas")
+        return;
+    }
+    if (arrivalIds.length === 0){
+        alert("La station d'arrivée n'existe pas")
+        return;
+    }
+    let minTime = Infinity;
+    let pathToMinTime = null;
+    let departureIdMin, arrivalIdMin;
+    for (let departureId of departureIds){
+        for (let arrivalId of arrivalIds){
+            let dijkstraResult = dijkstra(stationMap, departureId, arrivalId);
+            console.log(dijkstraResult);
+            if (dijkstraResult.time < minTime){
+                minTime = dijkstraResult.time;
+                pathToMinTime = dijkstraResult.path;
+                departureIdMin = departureId;
+                arrivalIdMin = arrivalId;
+            }
+        }
+    }
+    console.log(pathToMinTime);
+    let pathHTML = '';
+    pathToMinTime.forEach(line => {
+        let direction = "Feur";
+        pathHTML += `<div class="metro-station-lines">
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <img src="assets/line_icons/${line.line}.png" alt="Line ${line.line} icon" width="20" height="20" style="margin-right: 5px;">
+            <p style="margin: 0;">Métro ${line.line} - Direction ${direction}</p>
+        </div>
+        <div style="text-align: left;">
+            <ul style="margin-top: 0;">
+            ${line.stations.map(stationId => `<li>${stationMap.get(stationId).name}</li>`).join("")}
+            </ul>
+        </div>
+    </div>`
+    })
+    document.getElementById("path").innerHTML = pathHTML;
+}
+
 function initStationSelection() {
     firstSelect = {
         station:null,
@@ -71,6 +150,12 @@ function defineActionButtons() {
     document.getElementById("layerBtn").addEventListener('click', () => {
         map.setMapTypeId(isMapSatellite ? "roadmap" : "satellite")
         isMapSatellite = !isMapSatellite
+    })
+    document.getElementById("reset").addEventListener('click', () => {
+        clearInputValues()
+    })
+    document.getElementById("search").addEventListener('click', () => {
+        searchDijkstraPathForInputtedStations()
     })
 }
 
@@ -228,6 +313,7 @@ function getInfoWindow(station, stations) {
 /** STATION ADDING **/
 
 let stationMap = new Map();
+let lines = new Map();
 
 function addStationToStations(station) {
     stationMap.set(parseInt(station.station_id), {
@@ -238,6 +324,26 @@ function addStationToStations(station) {
         connection: station.connection,
         adjacentStations: []
     });
+}
+
+function addStationToLines(station) {
+    if (!lines.has(station.line_number)) {
+        lines.set(station.line_number, {
+            start: [],
+            end: []
+        });
+    }
+    if (station.is_end !== "False") {
+        if (station.connection === "0") {
+            if (lines.get(station.line_number).start.length === 0) {
+                lines.get(station.line_number).start.push(parseInt(station.station_id));
+            } else {
+                lines.get(station.line_number).end.push(parseInt(station.station_id));
+            }
+        } else {
+            lines.get(station.line_number).end.push(parseInt(station.station_id));
+        }
+    }
 }
 
 function addStationToMap(map, station, stations) {
@@ -278,11 +384,14 @@ function addStationToDataList(station) {
 
 function addStationsToApp(map, stations) {
     let stationNames = new Set();
+    lines = new Map();
+    stationMap = new Map();
     stations.forEach(station => {
         if (!stationNames.has(station.nom_gares)) {
             stationNames.add(station.nom_gares);
             addStationToMap(map, station, stations);
         }
+        addStationToLines(station);
         addStationToStations(station);
         addStationToDataList(station);
     });

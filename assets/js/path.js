@@ -1,10 +1,21 @@
-function getPath(distances, start, end) {
-    let path = [];
-    for (let station = end; station !== start; station = distances.get(station).station) {
-        path.unshift(station);
+function getPath(stationMap, distances, start, end) {
+    let path = [], current = end, line = stationMap.get(current).line,
+        lineStations = {end: current, stations: [current], line: line};
+
+    while (current !== start) {
+        let prev = distances.get(current).station, prevLine = stationMap.get(prev).line;
+        if (line !== prevLine) {
+            path.push({end : lineStations.end, stations: lineStations.stations.reverse(), line: lineStations.line,
+                start: current});
+            lineStations = {end: current, stations: [prev], line: prevLine};
+            line = prevLine;
+        }
+        current = prev;
+        lineStations.stations.push(current);
     }
-    path.unshift(start);
-    return path;
+    path.push({end : lineStations.end, stations: lineStations.stations.reverse(), line: lineStations.line,
+        start: current});
+    return path.reverse();
 }
 
 function dijkstra(stationMap, start, end) {
@@ -33,7 +44,7 @@ function dijkstra(stationMap, start, end) {
     }
 
     return {
-        path: getPath(distances, start, end),
+        path: getPath(stationMap, distances, start, end),
         time: distances.get(end).time
     };
 }
