@@ -1,9 +1,9 @@
 function isSameLineButDifferentDirection(stationMap, start, end) {
     return stationMap.get(start).line === stationMap.get(end).line &&
-        (stationMap.get(start).connection === "1"
+        ((stationMap.get(start).connection === "1"
             && stationMap.get(end).connection === "2") ||
         (stationMap.get(start).connection === "2"
-            && stationMap.get(end).connection === "1");
+            && stationMap.get(end).connection === "1"));
 }
 
 // TODO: refactor this function / make the code cleaner
@@ -51,7 +51,6 @@ function getPath(stationMap, distances, start, end) {
         current = prev;
         lineStations.stations.push(current);
     }
-
     path.push(createPathSegment(lineStations, current));
     return path.reverse();
 }
