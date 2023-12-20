@@ -8,21 +8,21 @@ const myStyles = [
         "featureType": "administrative",
         "elementType": "all",
         "stylers": [
-        {
-            "visibility": "off"
-        }
+            {
+                "visibility": "off"
+            }
         ]
     },
     {
         "featureType": "administrative.locality",
         "elementType": "labels",
         "stylers": [
-        {
-            "visibility": "simplified"
-        }
+            {
+                "visibility": "simplified"
+            }
         ]
     },
-    {elementType: "geometry", stylers: [{color: "#1A1A1A"}]}, 
+    {elementType: "geometry", stylers: [{color: "#1A1A1A"}]},
     {elementType: "labels.text.stroke", stylers: [{color: "#000000"}]},
     {elementType: "labels.text.fill", stylers: [{color: "#FFFFFF"}]},
     {

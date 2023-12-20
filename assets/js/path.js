@@ -1,21 +1,72 @@
-function getPath(stationMap, distances, start, end) {
-    let path = [], current = end, line = stationMap.get(current).line,
-        lineStations = {end: current, stations: [current], line: line};
+function isSameLineButDifferentDirection(stationMap, start, end) {
+    return stationMap.get(start).line === stationMap.get(end).line &&
+        (stationMap.get(start).connection === "1"
+            && stationMap.get(end).connection === "2") ||
+        (stationMap.get(start).connection === "2"
+            && stationMap.get(end).connection === "1");
+}
+
+// TODO: refactor this function / make the code cleaner
+function getPathSameLineButDifferentDirection(stationMap, distances, start, end) {
+    let path = [];
+    let current = end;
+    let line = stationMap.get(current).line;
+    let lineStations = createLineStations(stationMap, current, line);
+    lineStations.stations.push(current);
 
     while (current !== start) {
-        let prev = distances.get(current).station, prevLine = stationMap.get(prev).line;
-        if (line !== prevLine) {
-            path.push({end : lineStations.end, stations: lineStations.stations.reverse(), line: lineStations.line,
-                start: current});
-            lineStations = {end: current, stations: [prev], line: prevLine};
-            line = prevLine;
+        let prev = distances.get(current).station;
+
+        if (stationMap.get(prev).connection === "0") {
+            lineStations.stations.push(prev);
+            path.push(createPathSegment(lineStations, current));
+            lineStations = createLineStations(stationMap, prev, line);
         }
         current = prev;
         lineStations.stations.push(current);
     }
-    path.push({end : lineStations.end, stations: lineStations.stations.reverse(), line: lineStations.line,
-        start: current});
+    path.push(createPathSegment(lineStations, current));
     return path.reverse();
+
+}
+
+function getPath(stationMap, distances, start, end) {
+    let path = [];
+    let current = end;
+    let lineStations = createLineStations(stationMap, current);
+    lineStations.stations.push(current);
+    if (isSameLineButDifferentDirection(stationMap, start, end)) {
+        return getPathSameLineButDifferentDirection(stationMap, distances, start, end);
+    }
+
+    while (current !== start) {
+        let prev = distances.get(current).station;
+        let prevLine = stationMap.get(prev).line;
+
+        if (lineStations.line !== prevLine) {
+            path.push(createPathSegment(lineStations, current));
+            lineStations = createLineStations(stationMap, prev, prevLine);
+        }
+
+        current = prev;
+        lineStations.stations.push(current);
+    }
+
+    path.push(createPathSegment(lineStations, current));
+    return path.reverse();
+}
+
+function createLineStations(stationMap, station, line = stationMap.get(station).line) {
+    return { end: station, stations: [], line: line };
+}
+
+function createPathSegment(lineStations, start) {
+    return {
+        end: lineStations.end,
+        stations: lineStations.stations.reverse(),
+        line: lineStations.line,
+        start: start
+    };
 }
 
 function dijkstra(stationMap, start, end) {
@@ -24,9 +75,9 @@ function dijkstra(stationMap, start, end) {
     let distances = new Map();
 
     for (let station of stationMap.keys()) {
-        distances.set(station, { station: null, time: Infinity });
+        distances.set(station, {station: null, time: Infinity});
     }
-    distances.set(start, { station: start, time: 0 });
+    distances.set(start, {station: start, time: 0});
 
     while (unvisited.length > 0) {
         unvisited.sort((a, b) => distances.get(a).time - distances.get(b).time);
