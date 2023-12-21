@@ -19,7 +19,7 @@
     <div id="app">
         <div id="control-panel">
             <!-- Éléments de contrôle -->
-            <div style="display: flex;align-items: center;justify-content: center;">
+            <div class="zoneLogo">
                 <img class="logo" src="assets/img/map-icon.png" alt="descartographie_logo">
                 <h3 class="infoBox">Descartographie</h3>
             </div>
@@ -30,8 +30,10 @@
                 <!-- Liste des stations -->
             </datalist>
 
-            <button id="search">Rechercher</button>
-            <button id="reset">X</button>
+            <div class="d-flex">
+                <button id="search" class="w-75">Rechercher</button>
+                <button class="btn-danger w-25" id="reset"><i class="fas fa-times"></i></button>
+            </div>
 
             <div id="g_id_onload"
                 data-client_id="166841410239-ki6er9r9kc8cjk13skoiklrba2lkdo0u.apps.googleusercontent.com"
@@ -49,6 +51,7 @@
                 data-size="large"
                 data-logo_alignment="left">
             </div>
+            <hr>
             <div id="path">
 
             </div>
