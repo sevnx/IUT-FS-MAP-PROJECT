@@ -20,14 +20,13 @@ function getPath(stationMap, distances, start, end) {
     while (currentStation !== start) {
         let previous = distances.get(currentStation).station;
         let previousLine = stationMap.get(previous).line;
-        let isNextSegment = doesNeedTrainOnSameLine ?
-            stationMap.get(previous).connection === "0" :
-            lineStations.line !== previousLine;
+        let isNextSegmentForSameLine = doesNeedTrainOnSameLine ? stationMap.get(previous).connection === "0" : false;
 
-        if (isNextSegment) {
-            if (doesNeedTrainOnSameLine) {
+        if (isNextSegmentForSameLine || previousLine !== lineStations.line) {
+            if (lineStations.line !== previousLine)
+                doesNeedTrainOnSameLine = false;
+            if (doesNeedTrainOnSameLine)
                 lineStations.stations.push(previous);
-            }
             path.push(getLineSegment(lineStations, currentStation));
             lineStations = createLineSegment(stationMap, previous, previousLine);
         }
