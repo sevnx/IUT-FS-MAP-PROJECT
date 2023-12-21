@@ -45,25 +45,41 @@ document.addEventListener("DOMContentLoaded", async function () {
 function defineActionButtons() {
     document.getElementById("zoomInBtn").addEventListener('click', () => {
         map.setZoom(map.getZoom() + 1)
-    })
+    });
     document.getElementById("zoomOutBtn").addEventListener('click', () => {
         map.setZoom(map.getZoom() - 1)
-    })
+    });
     document.getElementById("returnToCenter").addEventListener('click', () => {
         map.setCenter(new google.maps.LatLng(...defaultParisCoordinates))
         map.setZoom(13)
-    })
+    });
     document.getElementById("layerBtn").addEventListener('click', () => {
         map.setMapTypeId(isMapSatellite ? "roadmap" : "satellite")
         isMapSatellite = !isMapSatellite
-    })
+    });
     document.getElementById("reset").addEventListener('click', () => {
         clearInputValues();
+        resetMarkersToInitial();
+        initStationSelection();
         document.getElementById("path").innerHTML = "";
-    })
+    });
     document.getElementById("search").addEventListener('click', () => {
         searchDijkstraPathForInputtedStations();
-    })
+    });
+    document.getElementById("departure").addEventListener('focusout', () => {
+        let departure = document.getElementById("departure").value;
+        if (getStationIdsFromName(departure).length === 0) {
+            return;
+        }
+        firstSelect = setSelect(departure, stationMarkers.get(departure));
+    });
+    document.getElementById("arrival").addEventListener('focusout', () => {
+        let arrival = document.getElementById("arrival").value;
+        if (getStationIdsFromName(arrival).length === 0) {
+            return;
+        }
+        secondSelect = setSelect(arrival, stationMarkers.get(arrival));
+    });
 }
 
 function getMetroColor(line) {
@@ -107,12 +123,12 @@ function getMetroColor(line) {
 
 function getLinesForStation(stationName, stations) {
     return stations
-        .filter(station => station.nom_gares === stationName)
-        .map(station => station.line_number);
+        .filter(station => station.name === stationName)
+        .map(station => station.line);
 }
 
 function getPopupContentForStation(station, stations) {
-    const lines = getLinesForStation(station.nom_gares, stations);
+    const lines = getLinesForStation(station.name, stations);
     let linesHTML = '';
     lines.forEach(line => {
         linesHTML += `<img src="assets/line_icons/${line}.png" alt="Line ${line} icon" width="20" height="20" style="margin-right: 5px">`;
@@ -122,7 +138,7 @@ function getPopupContentForStation(station, stations) {
     <div class="metro-station-lines">
     ${linesHTML}
     </div>
-    <strong>${station.nom_gares}</strong>
+    <strong>${station.name}</strong>
     </div>
     `;
 }
@@ -133,13 +149,13 @@ function getMarkerForOneLineStation(station) {
     let icon;
     if (station.is_end === "False") {
         icon = {
-            url: 'assets/line_icons/empty' + station.line_number + '.png',
+            url: 'assets/line_icons/empty' + station.line + '.png',
             scaledSize: new google.maps.Size(7, 7),
             anchor: new google.maps.Point(3, 4)
         }
     } else {
         icon = {
-            url: 'assets/line_icons/' + station.line_number + '.png',
+            url: 'assets/line_icons/' + station.line + '.png',
             scaledSize: new google.maps.Size(14, 14),
             anchor: new google.maps.Point(7, 7)
         }
@@ -182,8 +198,10 @@ function clearInputValues() {
 }
 
 function resetMarkersToInitial() {
-    firstSelect.marker.current.setIcon(firstSelect.marker.initialIcon)
-    secondSelect.marker.current.setIcon(secondSelect.marker.initialIcon)
+    if (firstSelect.marker.current)
+        firstSelect.marker.current.setIcon(firstSelect.marker.initialIcon)
+    if (secondSelect.marker.current)
+        secondSelect.marker.current.setIcon(secondSelect.marker.initialIcon)
 }
 
 function getSelectedIcon() {
@@ -222,6 +240,7 @@ function getInfoWindow(station, stations) {
 /** STATION ADDING **/
 
 let stationMap = new Map();
+let stationMarkers = new Map();
 let lines = new Map();
 
 function getStationIdsFromName(stationName) {
@@ -229,39 +248,39 @@ function getStationIdsFromName(stationName) {
 }
 
 function addStationToStations(station) {
-    stationMap.set(parseInt(station.station_id), {
+    stationMap.set(parseInt(station.id), {
         lat: station.lat,
         lon: station.lon,
-        name: station.nom_gares,
-        line: station.line_number,
+        name: station.name,
+        line: station.line,
         connection: station.connection,
         adjacentStations: []
     });
 }
 
 function addStationToLines(station) {
-    if (!lines.has(station.line_number)) {
-        lines.set(station.line_number, {
+    if (!lines.has(station.line)) {
+        lines.set(station.line, {
             start: [],
             end: []
         });
     }
     if (station.is_end !== "False") {
         if (station.connection === "0") {
-            if (lines.get(station.line_number).start.length === 0) {
-                lines.get(station.line_number).start.push(parseInt(station.station_id));
+            if (lines.get(station.line).start.length === 0) {
+                lines.get(station.line).start.push(parseInt(station.id));
             } else {
-                lines.get(station.line_number).end.push(parseInt(station.station_id));
+                lines.get(station.line).end.push(parseInt(station.id));
             }
         } else {
             let connection = parseInt(station.connection) -1;
-            lines.get(station.line_number).end[connection] = parseInt(station.station_id);
+            lines.get(station.line).end[connection] = parseInt(station.id);
         }
     }
 }
 
 function addStationToMap(map, station, stations) {
-    let marker = getStationMarker(station.nom_gares, station, stations);
+    let marker = getStationMarker(station.name, station, stations);
     marker.addListener('click', function () {
         if (firstSelect.station && secondSelect.station) {
             resetMarkersToInitial()
@@ -270,10 +289,10 @@ function addStationToMap(map, station, stations) {
         }
         if (firstSelect.station) {
             secondSelect = setSelect(station, marker)
-            document.getElementById("arrival").value = secondSelect.station.nom_gares
+            document.getElementById("arrival").value = secondSelect.station.name
         } else {
             firstSelect = setSelect(station, marker)
-            document.getElementById("departure").value = firstSelect.station.nom_gares
+            document.getElementById("departure").value = firstSelect.station.name
         }
         marker.setIcon(getSelectedIcon())
         marker.setZIndex(900)
@@ -287,12 +306,13 @@ function addStationToMap(map, station, stations) {
         closeCurrentStationInfoWindow();
     });
     marker.setMap(map);
+    stationMarkers.set(station.name, marker);
 }
 
 function addStationToDataList(station) {
     const datalist = document.getElementById("stations");
     const option = document.createElement("option");
-    option.value = station.nom_gares;
+    option.value = station.name;
     datalist.appendChild(option);
 }
 
@@ -301,8 +321,8 @@ function addStationsToApp(map, stations) {
     lines = new Map();
     stationMap = new Map();
     stations.forEach(station => {
-        if (!stationNames.has(station.nom_gares)) {
-            stationNames.add(station.nom_gares);
+        if (!stationNames.has(station.name)) {
+            stationNames.add(station.name);
             addStationToMap(map, station, stations);
             addStationToDataList(station);
         }
@@ -373,33 +393,27 @@ function getClosestStationToStart(start, end, line) {
     return startLine;
 }
 
-// TODO: refactor this abomination of a function / make the code cleaner
 function getDirection(start, end, line) {
-    start = stationMap.get(start);
-    end = stationMap.get(end);
-    let connectionId = parseInt(end.connection) -1;
-    if (start.connection === end.connection) {
-        let closestStation = getClosestStationToStart(start, end, line);
-        if (closestStation === start) {
-            if (lines.get(line).end.length > 1) {
-                if (end.connection === "0") {
-                    return `<b>${stationMap.get(lines.get(line).end[1]).name}</b> / <b>${stationMap.get(lines.get(line).end[0]).name}</b>`;
-                } else {
-                    return `<b>${stationMap.get(lines.get(line).end[connectionId]).name}</b>`;
-                }
-            } else {
-                return `<b>${stationMap.get(lines.get(line).end[0]).name}</b>`;
-            }
-        } else {
-            return `<b>${stationMap.get(lines.get(line).start[0]).name}</b>`;
-        }
+    const startStation = stationMap.get(start);
+    const endStation = stationMap.get(end);
+    const lineData = lines.get(line);
+    const connectionId = parseInt(endStation.connection) - 1;
 
+    const getEndName = (index) => `${stationMap.get(lineData.end[index]).name}`;
+    const getStartName = () => `${stationMap.get(lineData.start[0]).name}`;
+
+    if (startStation.connection === endStation.connection) {
+        let closestStation = getClosestStationToStart(startStation, endStation, line);
+
+        if (closestStation !== startStation)
+            return getStartName();
+        if (lineData.end.length > 1 && endStation.connection === "0")
+            return `${getEndName(1)} / ${getEndName(0)}`;
+
+        return getEndName(lineData.end.length > 1 ? connectionId : 0);
     }
-    if (end.connection === "0") {
-        return `<b>${stationMap.get(lines.get(line).start[0]).name}</b>`;
-    } else {
-        return `<b>${stationMap.get(lines.get(line).end[connectionId]).name}</b>`;
-    }
+
+    return endStation.connection === "0" ? getStartName() : getEndName(connectionId);
 }
 
 function getShortestPath(stationsStart, stationsEnd) {
@@ -408,15 +422,16 @@ function getShortestPath(stationsStart, stationsEnd) {
     for (let start of stationsStart) {
         for (let end of stationsEnd) {
             let result = dijkstra(stationMap, start, end);
+            console.log(result);
             if (result.time < shortestPath.time) {
                 shortestPath = { path: result.path, time: result.time };
             }
         }
     }
+
     return shortestPath;
 }
 
-// TODO: Refactor ? Maybe shorten the function / split
 function searchDijkstraPathForInputtedStations() {
     if (!firstSelect.station) {
         alert("Veuillez sélectionner une station de départ")
@@ -426,10 +441,8 @@ function searchDijkstraPathForInputtedStations() {
         alert("Veuillez sélectionner une station d'arrivée")
         return;
     }
-    let departure = document.getElementById("departure").value;
-    let arrival = document.getElementById("arrival").value;
-    let departureIds = getStationIdsFromName(departure);
-    let arrivalIds = getStationIdsFromName(arrival);
+    let departureIds = getStationIdsFromName(document.getElementById("departure").value);
+    let arrivalIds = getStationIdsFromName(document.getElementById("arrival").value);
     if (departureIds.length === 0) {
         alert("La station de départ n'existe pas")
         return;
@@ -438,33 +451,31 @@ function searchDijkstraPathForInputtedStations() {
         alert("La station d'arrivée n'existe pas")
         return;
     }
-    let dijkstraResult = getShortestPath(departureIds, arrivalIds);
-    document.getElementById("path").innerHTML = getHTMLRepresentationOfDijkstraResult(dijkstraResult);
+    document.getElementById("path").innerHTML = getPathDisplay(getShortestPath(departureIds, arrivalIds));
 }
 
-// TODO: Possibly make it cleaner
-function getHTMLRepresentationOfDijkstraResult(dijkstraResult) {
-    let path = dijkstraResult.path;
-    let time = dijkstraResult.time;
-    console.log(time)
-    let pathHTML = '';
-    pathHTML += `<strong>Temps de trajet : ${Math.floor(time / 60)} minutes et ${time % 60} secondes</strong><br><br>`
-    path.forEach(line => {
-        let direction = getDirection(line.start, line.end, line.line)
-        pathHTML += `<div class="metro-station-lines">
-        <div style="display: flex; align-items: center; justify-content: center;">
-            <img src="assets/line_icons/${line.line}.png" alt="Line ${line.line} icon" width="20" height="20" style="margin-right: 5px;">
-            <p style="margin: 0;">→ ${direction}</p>
-        </div>
-        <div style="text-align: left;">
-            <ul style="margin-top: 0;">
-            ${line.stations.map(stationId => `<li>${stationMap.get(stationId).name}</li>`).join("")}
-            </ul>
-        </div>
-    </div>`
-    })
+function getPathDisplay(dijkstraResult) {
+    const { path, time } = dijkstraResult;
+    console.log(path);
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
 
-    return pathHTML;
+    const pathHTML = path.map(line => {
+        const direction = getDirection(line.start, line.end, line.line);
+        const stations = line.stations.map(stationId => `<li>${stationMap.get(stationId).name}</li>`).join("");
+        return `
+            <div class="metro-station-lines">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <img src="assets/line_icons/${line.line}.png" alt="Line ${line.line} icon" width="20" height="20" style="margin-right: 5px;">
+                    <p style="margin: 0;">→ ${direction}</p>
+                </div>
+                <div style="text-align: left;">
+                    <ul style="margin-top: 0;">${stations}</ul>
+                </div>
+            </div>`;
+    }).join("");
+
+    return `<strong>Temps de trajet : ${minutes} minutes et ${seconds} secondes</strong><br><br>${pathHTML}`;
 }
 
 /** SIGN IN **/

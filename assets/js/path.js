@@ -1,65 +1,49 @@
-function isSameLineButDifferentDirection(stationMap, start, end) {
-    return stationMap.get(start).line === stationMap.get(end).line &&
-        ((stationMap.get(start).connection === "1"
-            && stationMap.get(end).connection === "2") ||
-        (stationMap.get(start).connection === "2"
-            && stationMap.get(end).connection === "1"));
-}
-
-// TODO: refactor this function / make the code cleaner
-function getPathSameLineButDifferentDirection(stationMap, distances, start, end) {
-    let path = [];
-    let current = end;
-    let line = stationMap.get(current).line;
-    let lineStations = createLineStations(stationMap, current, line);
-    lineStations.stations.push(current);
-
-    while (current !== start) {
-        let prev = distances.get(current).station;
-
-        if (stationMap.get(prev).connection === "0") {
-            lineStations.stations.push(prev);
-            path.push(createPathSegment(lineStations, current));
-            lineStations = createLineStations(stationMap, prev, line);
-        }
-        current = prev;
-        lineStations.stations.push(current);
-    }
-    path.push(createPathSegment(lineStations, current));
-    return path.reverse();
-
+/**
+ * Checks if we are in the case where the path is always the same line but in different direction
+ * Happens in lines 7 and 13
+ */
+function isSameLineButDifferentTrainNeeded(stationMap, start, end) {
+    let startStation = stationMap.get(start);
+    let endStation = stationMap.get(end);
+    return startStation.line === endStation.line &&
+        ((startStation.connection === "1" && endStation.connection === "2") ||
+            (startStation.connection === "2" && endStation.connection === "1"));
 }
 
 function getPath(stationMap, distances, start, end) {
     let path = [];
-    let current = end;
-    let lineStations = createLineStations(stationMap, current);
-    lineStations.stations.push(current);
-    if (isSameLineButDifferentDirection(stationMap, start, end)) {
-        return getPathSameLineButDifferentDirection(stationMap, distances, start, end);
-    }
+    let currentStation = end;
+    let doesNeedTrainOnSameLine = isSameLineButDifferentTrainNeeded(stationMap, start, end)
+    let lineStations = createLineSegment(stationMap, currentStation);
+    lineStations.stations.push(currentStation);
 
-    while (current !== start) {
-        let prev = distances.get(current).station;
-        let prevLine = stationMap.get(prev).line;
+    while (currentStation !== start) {
+        let previous = distances.get(currentStation).station;
+        let previousLine = stationMap.get(previous).line;
+        let isNextSegment = doesNeedTrainOnSameLine ?
+            stationMap.get(previous).connection === "0" :
+            lineStations.line !== previousLine;
 
-        if (lineStations.line !== prevLine) {
-            path.push(createPathSegment(lineStations, current));
-            lineStations = createLineStations(stationMap, prev, prevLine);
+        if (isNextSegment) {
+            if (doesNeedTrainOnSameLine) {
+                lineStations.stations.push(previous);
+            }
+            path.push(getLineSegment(lineStations, currentStation));
+            lineStations = createLineSegment(stationMap, previous, previousLine);
         }
 
-        current = prev;
-        lineStations.stations.push(current);
+        currentStation = previous;
+        lineStations.stations.push(currentStation);
     }
-    path.push(createPathSegment(lineStations, current));
+    path.push(getLineSegment(lineStations, currentStation));
     return path.reverse();
 }
 
-function createLineStations(stationMap, station, line = stationMap.get(station).line) {
-    return { end: station, stations: [], line: line };
+function createLineSegment(stationMap, station, line = stationMap.get(station).line) {
+    return {end: station, stations: [], line: line};
 }
 
-function createPathSegment(lineStations, start) {
+function getLineSegment(lineStations, start) {
     return {
         end: lineStations.end,
         stations: lineStations.stations.reverse(),
