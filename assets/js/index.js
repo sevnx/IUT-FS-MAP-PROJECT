@@ -432,52 +432,86 @@ function getShortestPath(stationsStart, stationsEnd) {
     return shortestPath;
 }
 
-function searchDijkstraPathForInputtedStations() {
+function isFromAndToValid() {
     if (!firstSelect.station) {
         alert("Veuillez sélectionner une station de départ")
-        return;
+        return false;
     }
     if (!secondSelect.station) {
         alert("Veuillez sélectionner une station d'arrivée")
-        return;
+        return false;
     }
+    if (firstSelect.station === secondSelect.station) {
+        alert("Veuillez sélectionner deux stations différentes")
+        return false;
+    }
+    if (getStationIdsFromName(document.getElementById("departure").value).length === 0) {
+        alert("La station de départ n'existe pas")
+        return false;
+    }
+    if (getStationIdsFromName(document.getElementById("arrival").value).length === 0) {
+        alert("La station d'arrivée n'existe pas")
+        return false;
+    }
+    return true;
+}
+
+function searchDijkstraPathForInputtedStations() {
+    if (!isFromAndToValid())
+        return;
     let departureIds = getStationIdsFromName(document.getElementById("departure").value);
     let arrivalIds = getStationIdsFromName(document.getElementById("arrival").value);
-    if (departureIds.length === 0) {
-        alert("La station de départ n'existe pas")
-        return;
-    }
-    if (arrivalIds.length === 0) {
-        alert("La station d'arrivée n'existe pas")
-        return;
-    }
     document.getElementById("path").innerHTML = getPathDisplay(getShortestPath(departureIds, arrivalIds));
 }
 
 function getPathDisplay(dijkstraResult) {
     const { path, time } = dijkstraResult;
-    console.log(path);
     const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
+    const seconds = time % 60 < 10 ? `0${time % 60}` : time % 60;
 
-    const pathHTML = path.map(line => {
+    const pathHTML = path.map((line, index) => {
+        const startStationName = stationMap.get(line.start).name;
+        const endStationName = stationMap.get(line.end).name;
         const direction = getDirection(line.start, line.end, line.line);
-        const stations = line.stations.map(stationId => `<li>${stationMap.get(stationId).name}</li>`).join("");
+        const metroColor = getMetroColor(line.line);
         return `
-            <div class="metro-station-lines">
-                <div style="display: flex; align-items: center; justify-content: center;">
-                    <img src="assets/line_icons/${line.line}.png" alt="Line ${line.line} icon" width="20" height="20" style="margin-right: 5px;">
-                    <p style="margin: 0;">→ ${direction}</p>
+            <div class="path-segment" style="border-left-color: ${metroColor};">
+                <div class="line-header" onclick="toggleStations(${index})">
+                    <img src="assets/line_icons/${line.line}.png" alt="Line ${line.line} icon" class="line-icon">
+                    <div>
+                        <div class="line-start-station">${startStationName}</div>
+                        <div class="line-direction">vers ${direction}</div>
+                    </div>
                 </div>
-                <div style="text-align: left;">
-                    <ul style="margin-top: 0;">${stations}</ul>
-                </div>
+                <ul class="stations-list hidden" id="stations-list-${index}">
+                    <li class="station-item">${startStationName}</li>
+                    ${line.stations.map(station => `<li class="station-item">${stationMap.get(station).name}</li>`).join("")}
+                    <li class="station-item">${endStationName}</li>
+                </ul>
             </div>`;
     }).join("");
 
-    return `<strong>Temps de trajet : ${minutes} minutes et ${seconds} secondes</strong><br><br>${pathHTML}`;
+    return `<div class="path-display">
+                <div class="estimated-time-block">
+                    <p class="estimated-time"><strong>Temps estimé :</strong> ${minutes}:${seconds}</p>
+                </div>
+                ${pathHTML}
+            </div>`;
 }
 
+window.toggleStations = function(index) {
+    const stationsList = document.getElementById(`stations-list-${index}`);
+    stationsList.classList.toggle('hidden');
+};
+
+
+function toggleStations(index) {
+    const stationsList = document.getElementById(`stations-list-${index}`);
+    stationsList.classList.toggle('show');
+    // Toggle the text of the expand button
+    const expandButton = stationsList.previousElementSibling.querySelector('.expand-stations');
+    expandButton.textContent = expandButton.textContent.includes('Show more') ? 'Show less' : 'Show more';
+}
 /** SIGN IN **/
 
 function onSignIn(googleUser) {

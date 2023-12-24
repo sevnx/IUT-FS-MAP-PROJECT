@@ -26,13 +26,15 @@ body, html {
 }
 
 #control-panel {
+  max-height: calc(100vh - 50px); /* Adjust 50px to your footer's height */
+  overflow-y: auto; /* Enables vertical scrolling if content overflows */
   width: 25%;
   background-color: #363636;
   color: var(--white-color);
-  padding: 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  padding: 20px;
 }
 
 #title {
@@ -198,8 +200,119 @@ footer {
   100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 
-#path{
-  margin-top: 5px;
+/* Path display */
+
+#path {
+  padding: 10px;
+}
+
+.path-display {
+  font-family: "Open Sans", sans-serif;
+  color: #ddd; /* Light text color for dark mode */
+}
+
+.path-segment {
+  border-left: 4px solid #4285f4;
+  padding-left: 5px;
+  margin-bottom: 5px;
+  box-shadow: 0 0 4px rgba(0.25, 0.25, 0.25, 0.25); /* Add a shadow to the block */
+}
+
+/* Small Blocks for segments */
+
+.line-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 5px;
+  color: #ffffff;
+}
+
+.line-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.line-start-station {
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.line-direction {
+  color: #707070; /* Light text color for readability */
+  font-size: 0.9em;
+  margin-top: 4px; /* Space between station name and direction */
+}
+
+/* List of stations */
+
+.stations-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.station-item {
+  background-color: #333; /* Darker background for each station item */
+  color: #ddd; /* Light text color for readability */
+  padding: 5px 10px;
+  border-radius: 2px;
+  margin-bottom: 2px;
+  font-size: 0.85em;
+}
+
+.station-item::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.stations-list.hidden {
+  display: none;
+}
+
+.station-item.show {
+  display: list-item; /* Show them when the list is expanded */
+}
+
+.expand-stations {
+  cursor: pointer;
+  color: #4285f4;
+  margin-left: 10px;
+}
+
+/* Time estimate block */
+
+.estimated-time {
+  margin: 0;
+  font-size: 1.2em;
+  text-align: center; /* Center the text inside the block */
+}
+
+.estimated-time-block {
+  background-color: #333; /* Dark background for the block */
+  color: #fff; /* White text for readability */
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px; /* Space between time block and the first path segment */
+  box-shadow: 0 0 4px rgba(0.25, 0.25, 0.25, 0.25); /* Add a shadow to the block */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+#control-panel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+#control-panel {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 hr{

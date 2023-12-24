@@ -15,24 +15,20 @@ function getPath(stationMap, distances, start, end) {
     let currentStation = end;
     let doesNeedTrainOnSameLine = isSameLineButDifferentTrainNeeded(stationMap, start, end)
     let lineStations = createLineSegment(stationMap, currentStation);
-    lineStations.stations.push(currentStation);
 
     while (currentStation !== start) {
         let previous = distances.get(currentStation).station;
         let previousLine = stationMap.get(previous).line;
-        let isNextSegmentForSameLine = doesNeedTrainOnSameLine ? stationMap.get(previous).connection === "0" : false;
+        let isNextSegmentForSameLine = doesNeedTrainOnSameLine && stationMap.get(previous).connection === "0";
 
         if (isNextSegmentForSameLine || previousLine !== lineStations.line) {
-            if (lineStations.line !== previousLine)
-                doesNeedTrainOnSameLine = false;
-            if (doesNeedTrainOnSameLine)
-                lineStations.stations.push(previous);
-            path.push(getLineSegment(lineStations, currentStation));
+            doesNeedTrainOnSameLine = lineStations.line === previousLine;
+            path.push(getLineSegment(lineStations, doesNeedTrainOnSameLine ? previous : currentStation));
             lineStations = createLineSegment(stationMap, previous, previousLine);
+        } else {
+            lineStations.stations.push(previous);
         }
-
         currentStation = previous;
-        lineStations.stations.push(currentStation);
     }
     path.push(getLineSegment(lineStations, currentStation));
     return path.reverse();
@@ -45,7 +41,7 @@ function createLineSegment(stationMap, station, line = stationMap.get(station).l
 function getLineSegment(lineStations, start) {
     return {
         end: lineStations.end,
-        stations: lineStations.stations.reverse(),
+        stations: lineStations.stations.slice(0, lineStations.stations.length - 1).reverse(),
         line: lineStations.line,
         start: start
     };
