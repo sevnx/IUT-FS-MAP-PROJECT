@@ -485,6 +485,7 @@ function getPathDisplay(dijkstraResult) {
                             ${direction}
                         </div>
                     </div>
+                    <img src="assets/img/lines/arrow.png" alt="Arrow icon" class="expand-arrow">
                 </div>
                 <ul class="stations-list hidden" id="stations-list-${index}">
                     <li class="station-item">${startStationName}</li>
@@ -505,16 +506,10 @@ function getPathDisplay(dijkstraResult) {
 window.toggleStations = function(index) {
     const stationsList = document.getElementById(`stations-list-${index}`);
     stationsList.classList.toggle('hidden');
+    const arrow = stationsList.previousElementSibling.querySelector('.expand-arrow');
+    arrow.classList.toggle('rotate');
 };
 
-
-function toggleStations(index) {
-    const stationsList = document.getElementById(`stations-list-${index}`);
-    stationsList.classList.toggle('show');
-    // Toggle the text of the expand button
-    const expandButton = stationsList.previousElementSibling.querySelector('.expand-stations');
-    expandButton.textContent = expandButton.textContent.includes('Show more') ? 'Show less' : 'Show more';
-}
 /** SIGN IN **/
 
 function onSignIn(googleUser) {

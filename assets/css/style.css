@@ -295,6 +295,18 @@ footer {
   margin-left: 10px;
 }
 
+.expand-arrow {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s;
+  margin-left: auto;
+
+}
+
+.expand-arrow.rotate {
+  transform: rotate(90deg);
+}
+
 /* Time estimate block */
 
 .estimated-time {
