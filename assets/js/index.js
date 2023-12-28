@@ -6,7 +6,7 @@ let isMapSatellite = false;
 
 function getBlinkingIcon(isActive) {
     return {
-        url: 'assets/line_icons/' + (isActive ? 'corresp' : 'selected') + '.png',
+        url: 'assets/img/lines/' + (isActive ? 'connection' : 'selected') + '.png',
         scaledSize: new google.maps.Size(12, 12),
         anchor: new google.maps.Point(5, 6)
     }
@@ -131,7 +131,7 @@ function getPopupContentForStation(station, stations) {
     const lines = getLinesForStation(station.name, stations);
     let linesHTML = '';
     lines.forEach(line => {
-        linesHTML += `<img src="assets/line_icons/${line}.png" alt="Line ${line} icon" width="20" height="20" style="margin-right: 5px">`;
+        linesHTML += `<img src="assets/img/lines/default/${line}.png" alt="Line ${line} icon" width="20" height="20" style="margin-right: 5px">`;
     });
     return `
     <div style="display: flex;align-items: center">
@@ -149,13 +149,13 @@ function getMarkerForOneLineStation(station) {
     let icon;
     if (station.is_end === "False") {
         icon = {
-            url: 'assets/line_icons/empty' + station.line + '.png',
+            url: 'assets/img/lines/empty/empty' + station.line + '.png',
             scaledSize: new google.maps.Size(7, 7),
             anchor: new google.maps.Point(3, 4)
         }
     } else {
         icon = {
-            url: 'assets/line_icons/' + station.line + '.png',
+            url: 'assets/img/lines/default/' + station.line + '.png',
             scaledSize: new google.maps.Size(14, 14),
             anchor: new google.maps.Point(7, 7)
         }
@@ -174,7 +174,7 @@ function getMarkerForMultiLineStation(station) {
         map: map,
         // animation: google.maps.Animation.DROP,
         icon: {
-            url: 'assets/line_icons/corresp.png',
+            url: 'assets/img/lines/connection.png',
             scaledSize: new google.maps.Size(9, 9),
             anchor: new google.maps.Point(4, 4)
         }
@@ -206,7 +206,7 @@ function resetMarkersToInitial() {
 
 function getSelectedIcon() {
     return {
-        url: 'assets/line_icons/selected.png',
+        url: 'assets/img/lines/selected.png',
         scaledSize: new google.maps.Size(12, 12),
         anchor: new google.maps.Point(5, 6)
     }
@@ -477,10 +477,13 @@ function getPathDisplay(dijkstraResult) {
         return `
             <div class="path-segment" style="border-left-color: ${metroColor};">
                 <div class="line-header" onclick="toggleStations(${index})">
-                    <img src="assets/line_icons/${line.line}.png" alt="Line ${line.line} icon" class="line-icon">
+                    <img src="assets/img/lines/default/${line.line}.png" alt="Line ${line.line} icon" class="line-icon">
                     <div>
                         <div class="line-start-station">${startStationName}</div>
-                        <div class="line-direction">vers ${direction}</div>
+                        <div class="line-direction"> 
+                            <img src="assets/img/lines/arrow/${line.line}.png" alt="Arrow icon" class="arrow-icon">
+                            ${direction}
+                        </div>
                     </div>
                 </div>
                 <ul class="stations-list hidden" id="stations-list-${index}">

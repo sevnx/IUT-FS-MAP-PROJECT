@@ -235,15 +235,23 @@ footer {
   margin-right: 10px;
 }
 
+.arrow-icon {
+  width: 15px;
+  height: 15px;
+  margin-right: 3px;
+  margin-top: 2px;
+}
+
 .line-start-station {
   font-weight: bold;
   font-size: 1em;
 }
 
 .line-direction {
-  color: #707070; /* Light text color for readability */
+  display: flex;
+  color: #707070;
   font-size: 0.9em;
-  margin-top: 4px; /* Space between station name and direction */
+  margin-top: 4px;
 }
 
 /* List of stations */
@@ -342,3 +350,4 @@ hr{
     position: relative;
   }
 }
+
