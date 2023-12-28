@@ -1,44 +1,51 @@
 const defaultParisCoordinates = [48.855, 2.32];
 let map;
-let firstSelect;
-let secondSelect;
-let isMapSatellite = false;
+let firstStationSelect;
+let secondStationSelect;
+let satelliteToggle = false;
+let googleMapObject = google.maps;
 
 function getBlinkingIcon(isActive) {
     return {
         url: 'assets/img/lines/' + (isActive ? 'connection' : 'selected') + '.png',
-        scaledSize: new google.maps.Size(12, 12),
-        anchor: new google.maps.Point(5, 6)
+        scaledSize: new googleMapObject.Size(12, 12),
+        anchor: new googleMapObject.Point(5, 6)
     }
 }
 
 function initStationSelection() {
-    const defaultStationSelectionObject = () => ({ station: null, marker: { current: null, initialIcon: null } });
-    firstSelect = defaultStationSelectionObject();
-    secondSelect = defaultStationSelectionObject();
+    const defaultStationSelectionObject = () => ({station: null, marker: {current: null, initialIcon: null}});
+    firstStationSelect = defaultStationSelectionObject();
+    secondStationSelect = defaultStationSelectionObject();
 }
 
 async function fetchJSON(url) {
     return await fetch(url).then(response => response.json());
 }
 
+function resetDisplay() {
+    resetMarkersToInitial();
+    initStationSelection();
+    clearInputValues();
+    restoreDefaultOpacity();
+    deletePathShow();
+}
+
 document.addEventListener("DOMContentLoaded", async function () {
-    initStationSelection()
+    initStationSelection();
     map = getGoogleMap();
     defineActionButtons();
     let stations = await fetchJSON('https://descartographie.ait37.fr/assets/json/stations.json');
     let interconnections = await fetchJSON('https://descartographie.ait37.fr/assets/json/interconnection.json');
     await loadMetro(map, stations, interconnections);
 
-    let isActive = false;
+    let blinkIsActive = false;
     setInterval(() => {
-        if (firstSelect.station) {
-            firstSelect.marker.current.setIcon(getBlinkingIcon(isActive))
-        }
-        if (secondSelect.station) {
-            secondSelect.marker.current.setIcon(getBlinkingIcon(isActive))
-        }
-        isActive = !isActive
+        if (firstStationSelect.station)
+            firstStationSelect.marker.current.setIcon(getBlinkingIcon(blinkIsActive));
+        if (secondStationSelect.station)
+            secondStationSelect.marker.current.setIcon(getBlinkingIcon(blinkIsActive));
+        blinkIsActive = !blinkIsActive
     }, 500);
 });
 
@@ -46,39 +53,47 @@ function defineActionButtons() {
     document.getElementById("zoomInBtn").addEventListener('click', () => {
         map.setZoom(map.getZoom() + 1)
     });
+
     document.getElementById("zoomOutBtn").addEventListener('click', () => {
         map.setZoom(map.getZoom() - 1)
     });
+
     document.getElementById("returnToCenter").addEventListener('click', () => {
-        map.setCenter(new google.maps.LatLng(...defaultParisCoordinates))
+        map.setCenter(new googleMapObject.LatLng(...defaultParisCoordinates))
         map.setZoom(13)
     });
+
     document.getElementById("layerBtn").addEventListener('click', () => {
-        map.setMapTypeId(isMapSatellite ? "roadmap" : "satellite")
-        isMapSatellite = !isMapSatellite
+        map.setMapTypeId(satelliteToggle ? "roadmap" : "satellite")
+        satelliteToggle = !satelliteToggle
     });
+
     document.getElementById("reset").addEventListener('click', () => {
-        clearInputValues();
-        resetMarkersToInitial();
-        initStationSelection();
-        document.getElementById("path").innerHTML = "";
+        resetDisplay();
     });
+
     document.getElementById("search").addEventListener('click', () => {
         searchDijkstraPathForInputtedStations();
     });
+
     document.getElementById("departure").addEventListener('focusout', () => {
+        deletePathShow();
+        restoreDefaultOpacity();
         let departure = document.getElementById("departure").value;
         if (getStationIdsFromName(departure).length === 0) {
             return;
         }
-        firstSelect = setSelect(departure, stationMarkers.get(departure));
+        firstStationSelect = setSelect(stationMap.get(getStationIdsFromName(departure)[0]), stationMarkers.get(departure));
     });
+
     document.getElementById("arrival").addEventListener('focusout', () => {
+        deletePathShow();
+        restoreDefaultOpacity();
         let arrival = document.getElementById("arrival").value;
         if (getStationIdsFromName(arrival).length === 0) {
             return;
         }
-        secondSelect = setSelect(arrival, stationMarkers.get(arrival));
+        secondStationSelect = setSelect(stationMap.get(getStationIdsFromName(arrival)[0]), stationMarkers.get(arrival));
     });
 }
 
@@ -129,16 +144,18 @@ function getLinesForStation(stationName, stations) {
 
 function getPopupContentForStation(station, stations) {
     const lines = getLinesForStation(station.name, stations);
-    let linesHTML = '';
+    let imagesOfLinesForStation = '';
     lines.forEach(line => {
-        linesHTML += `<img src="assets/img/lines/default/${line}.png" alt="Line ${line} icon" width="20" height="20" style="margin-right: 5px">`;
+        imagesOfLinesForStation += `
+            <img src="assets/img/lines/default/${line}.png" alt="Line ${line} icon" class="line-popup-icon">
+        `;
     });
     return `
     <div style="display: flex;align-items: center">
-    <div class="metro-station-lines">
-    ${linesHTML}
-    </div>
-    <strong>${station.name}</strong>
+        <div class="metro-station-lines">
+            ${imagesOfLinesForStation}
+        </div>
+        <strong>${station.name}</strong>
     </div>
     `;
 }
@@ -150,33 +167,35 @@ function getMarkerForOneLineStation(station) {
     if (station.is_end === "False") {
         icon = {
             url: 'assets/img/lines/empty/' + station.line + '.png',
-            scaledSize: new google.maps.Size(7, 7),
-            anchor: new google.maps.Point(3, 4)
+            scaledSize: new googleMapObject.Size(7, 7),
+            anchor: new googleMapObject.Point(3, 4)
         }
     } else {
         icon = {
             url: 'assets/img/lines/default/' + station.line + '.png',
-            scaledSize: new google.maps.Size(14, 14),
-            anchor: new google.maps.Point(7, 7)
+            scaledSize: new googleMapObject.Size(14, 14),
+            anchor: new googleMapObject.Point(7, 7)
         }
     }
-    return new google.maps.Marker({
+    return new googleMapObject.Marker({
+        optimized: station.is_end !== "True",
         position: {lat: station.lat, lng: station.lon},
         map: map,
-        // animation: google.maps.Animation.DROP,
+        // animation: googleMapObject.Animation.DROP,
         icon: icon
     });
 }
 
 function getMarkerForMultiLineStation(station) {
-    return new google.maps.Marker({
+    return new googleMapObject.Marker({
+        optimized: false,
         position: {lat: station.lat, lng: station.lon},
         map: map,
-        // animation: google.maps.Animation.DROP,
+        // animation: googleMapObject.Animation.DROP,
         icon: {
             url: 'assets/img/lines/connection.png',
-            scaledSize: new google.maps.Size(9, 9),
-            anchor: new google.maps.Point(4, 4)
+            scaledSize: new googleMapObject.Size(9, 9),
+            anchor: new googleMapObject.Point(4, 4)
         }
     });
 }
@@ -198,17 +217,17 @@ function clearInputValues() {
 }
 
 function resetMarkersToInitial() {
-    if (firstSelect.marker.current)
-        firstSelect.marker.current.setIcon(firstSelect.marker.initialIcon)
-    if (secondSelect.marker.current)
-        secondSelect.marker.current.setIcon(secondSelect.marker.initialIcon)
+    if (firstStationSelect.marker.current)
+        firstStationSelect.marker.current.setIcon(firstStationSelect.marker.initialIcon);
+    if (secondStationSelect.marker.current)
+        secondStationSelect.marker.current.setIcon(secondStationSelect.marker.initialIcon);
 }
 
 function getSelectedIcon() {
     return {
         url: 'assets/img/lines/selected.png',
-        scaledSize: new google.maps.Size(12, 12),
-        anchor: new google.maps.Point(5, 6)
+        scaledSize: new googleMapObject.Size(12, 12),
+        anchor: new googleMapObject.Point(5, 6)
     }
 }
 
@@ -232,7 +251,7 @@ function closeCurrentStationInfoWindow() {
 }
 
 function getInfoWindow(station, stations) {
-    return new google.maps.InfoWindow({
+    return new googleMapObject.InfoWindow({
         content: getPopupContentForStation(station, stations)
     });
 }
@@ -242,12 +261,13 @@ function getInfoWindow(station, stations) {
 let stationMap = new Map();
 let stationMarkers = new Map();
 let lines = new Map();
+let polyLinesBetweenStations = new Map();
 
 function getStationIdsFromName(stationName) {
     return [...stationMap.keys()].filter(id => stationMap.get(id).name === stationName)
 }
 
-function addStationToStations(station) {
+function addStationToStationMap(station) {
     stationMap.set(parseInt(station.id), {
         lat: station.lat,
         lon: station.lon,
@@ -273,29 +293,35 @@ function addStationToLines(station) {
                 lines.get(station.line).end.push(parseInt(station.id));
             }
         } else {
-            let connection = parseInt(station.connection) -1;
+            let connection = parseInt(station.connection) - 1;
             lines.get(station.line).end[connection] = parseInt(station.id);
         }
     }
 }
 
+function handleStationSelection(station) {
+    let marker;
+    if (firstStationSelect.station && secondStationSelect.station) {
+        resetDisplay();
+    }
+    if (firstStationSelect.station) {
+        secondStationSelect = setSelect(station, stationMarkers.get(station.name));
+        marker = stationMarkers.get(secondStationSelect.station.name);
+        document.getElementById("arrival").value = secondStationSelect.station.name;
+        searchDijkstraPathForInputtedStations();
+    } else {
+        firstStationSelect = setSelect(station, stationMarkers.get(station.name));
+        marker = stationMarkers.get(firstStationSelect.station.name);
+        document.getElementById("departure").value = firstStationSelect.station.name;
+    }
+    marker.setIcon(getSelectedIcon());
+    marker.setZIndex(900);
+}
+
 function addStationToMap(map, station, stations) {
     let marker = getStationMarker(station.name, station, stations);
     marker.addListener('click', function () {
-        if (firstSelect.station && secondSelect.station) {
-            resetMarkersToInitial()
-            initStationSelection()
-            clearInputValues()
-        }
-        if (firstSelect.station) {
-            secondSelect = setSelect(station, marker)
-            document.getElementById("arrival").value = secondSelect.station.name
-        } else {
-            firstSelect = setSelect(station, marker)
-            document.getElementById("departure").value = firstSelect.station.name
-        }
-        marker.setIcon(getSelectedIcon())
-        marker.setZIndex(900)
+        handleStationSelection(station);
     });
     marker.addListener('mouseover', function () {
         closeCurrentStationInfoWindow();
@@ -327,14 +353,15 @@ function addStationsToApp(map, stations) {
             addStationToDataList(station);
         }
         addStationToLines(station);
-        addStationToStations(station);
+        addStationToStationMap(station);
     });
 }
 
 /** INTERCONNECTION ADDING **/
 
 function getLineBetweenStations(station1, station2) {
-    return new google.maps.Polyline({
+    console.log(station1, station2);
+    return new googleMapObject.Polyline({
         path: [
             {lat: station1.lat, lng: station1.lon},
             {lat: station2.lat, lng: station2.lon}
@@ -357,10 +384,21 @@ function addInterconnectionToStationMap(interconnection) {
     });
 }
 
+function getPairInOrder(station1, station2) {
+    station1 = parseInt(station1);
+    station2 = parseInt(station2);
+    return station1 < station2 ? [station1, station2] : [station2, station1];
+}
+
+function getPolylineKey(station1, station2) {
+    return (station1 + "-" + station2);
+}
+
 function addInterconnectionToMap(map, interconnection) {
-    const station1 = stationMap.get(parseInt(interconnection.station1));
-    const station2 = stationMap.get(parseInt(interconnection.station2));
-    getLineBetweenStations(station1, station2).setMap(map);
+    const [station1, station2] = getPairInOrder(interconnection.station1, interconnection.station2);
+    let lineBetweenStations = getLineBetweenStations(stationMap.get(station1), stationMap.get(station2));
+    polyLinesBetweenStations.set(getPolylineKey(station1, station2), lineBetweenStations);
+    lineBetweenStations.setMap(map);
 }
 
 function addInterconnectionsToApp(map, stations, interconnections) {
@@ -376,6 +414,7 @@ async function loadMetro(map, stations, liaisons) {
 }
 
 /** DIJKSTRA **/
+
 function getClosestStationToStart(start, end, line) {
     let notValidConnection = end.connection === "1" ? "2" : "1";
     let startLine = stationMap.get(lines.get(line).start[0]);
@@ -383,7 +422,7 @@ function getClosestStationToStart(start, end, line) {
     while (startLine !== start && startLine !== end) {
         for (let {station} of startLine.adjacentStations) {
             if (stationMap.get(station).line === line && stationMap.get(station) !== previousStation
-            && notValidConnection !== stationMap.get(station).connection) {
+                && notValidConnection !== stationMap.get(station).connection) {
                 previousStation = startLine;
                 startLine = stationMap.get(station);
                 break;
@@ -417,14 +456,13 @@ function getDirection(start, end, line) {
 }
 
 function getShortestPath(stationsStart, stationsEnd) {
-    let shortestPath = { path: null, time: Infinity };
+    let shortestPath = {path: null, time: Infinity};
 
     for (let start of stationsStart) {
         for (let end of stationsEnd) {
             let result = dijkstra(stationMap, start, end);
-            console.log(result);
             if (result.time < shortestPath.time) {
-                shortestPath = { path: result.path, time: result.time };
+                shortestPath = {path: result.path, time: result.time};
             }
         }
     }
@@ -433,15 +471,15 @@ function getShortestPath(stationsStart, stationsEnd) {
 }
 
 function isFromAndToValid() {
-    if (!firstSelect.station) {
+    if (!firstStationSelect.station) {
         alert("Veuillez sélectionner une station de départ")
         return false;
     }
-    if (!secondSelect.station) {
+    if (!secondStationSelect.station) {
         alert("Veuillez sélectionner une station d'arrivée")
         return false;
     }
-    if (firstSelect.station === secondSelect.station) {
+    if (firstStationSelect.station === secondStationSelect.station) {
         alert("Veuillez sélectionner deux stations différentes")
         return false;
     }
@@ -456,26 +494,138 @@ function isFromAndToValid() {
     return true;
 }
 
+function reduceOpacityOfAllStationMarkers() {
+    stationMarkers.forEach(marker => {
+        marker.setOpacity(0.2);
+    });
+}
+
+function returnStationMarkerToInitialOpacity(station) {
+    station = stationMap.get(station).name;
+    stationMarkers.get(station).setOpacity(1.0);
+}
+
+function restoreDefaultOpacity() {
+    restoreAllStationMarkersOpacity();
+    restoreAllPolyLinesOpactiy();
+}
+
+function restoreAllStationMarkersOpacity() {
+    stationMarkers.forEach(marker => {
+        marker.setOpacity(1.0);
+    });
+}
+
+function reduceAllPolyLinesOpacity() {
+    polyLinesBetweenStations.forEach(polyLine => {
+        polyLine.setOptions({strokeOpacity: 0.2});
+    });
+}
+
+let pathPolyLines = [];
+
+function deletePathShow() {
+    for (let i = 0; i < pathPolyLines.length; i++) {
+        pathPolyLines[i].setMap(null);
+    }
+    pathPolyLines = [];
+    document.getElementById("path").innerHTML = "";
+}
+
+function restoreAllPolyLinesOpactiy() {
+    polyLinesBetweenStations.forEach(polyLine => {
+        polyLine.setOptions({strokeOpacity: 1.0});
+    });
+}
+
 function searchDijkstraPathForInputtedStations() {
     if (!isFromAndToValid())
         return;
+    deletePathShow();
+    reduceAllPolyLinesOpacity();
+    reduceOpacityOfAllStationMarkers();
     let departureIds = getStationIdsFromName(document.getElementById("departure").value);
     let arrivalIds = getStationIdsFromName(document.getElementById("arrival").value);
     document.getElementById("path").innerHTML = getPathDisplay(getShortestPath(departureIds, arrivalIds));
 }
 
+function animateDrawingPolyline(startCoord, endCoord, duration, delay, color) {
+    startCoord = new googleMapObject.LatLng(startCoord.lat, startCoord.lon);
+    endCoord = new googleMapObject.LatLng(endCoord.lat, endCoord.lon);
+    const polyline = new googleMapObject.Polyline({
+        path: [startCoord, startCoord],
+        geodesic: true,
+        strokeColor: color,
+        strokeOpacity: 1.0,
+        strokeWeight: 3
+    });
+    polyline.setMap(map);
+    pathPolyLines.push(polyline);
+
+    setTimeout(() => {
+        let startTime;
+
+        function frame(currentTime) {
+            if (!startTime) {
+                startTime = currentTime;
+            }
+
+            const progress = Math.min((currentTime - startTime) / duration, 1);
+            const lat = startCoord.lat() + (endCoord.lat() - startCoord.lat()) * progress;
+            const lng = startCoord.lng() + (endCoord.lng() - startCoord.lng()) * progress;
+            const currentPath = [startCoord, new googleMapObject.LatLng(lat, lng)];
+
+            polyline.setPath(currentPath);
+
+            if (progress < 1) {
+                requestAnimationFrame(frame);
+            }
+        }
+
+        requestAnimationFrame(frame);
+    }, delay);
+}
+
+let currentDelay = 0;
+const delayIncrement = 200;
+
+function animatePathSegment(line) {
+    let currentId = line.start;
+    const stations = [...line.stations];
+    const color = getMetroColor(line.line);
+    stations.forEach(nextId => {
+        const currentStation = stationMap.get(currentId);
+        const nextStation = stationMap.get(nextId);
+        animateDrawingPolyline(currentStation, nextStation, delayIncrement, currentDelay, color);
+        returnStationMarkerToInitialOpacity(currentId);
+        currentDelay += delayIncrement;
+        currentId = nextId;
+    });
+
+    const currentStation = stationMap.get(currentId);
+    const endStation = stationMap.get(line.end);
+    animateDrawingPolyline(currentStation, endStation, delayIncrement, currentDelay, color);
+    currentDelay += delayIncrement;
+
+    returnStationMarkerToInitialOpacity(currentId);
+    returnStationMarkerToInitialOpacity(line.end);
+}
+
 function getPathDisplay(dijkstraResult) {
-    const { path, time } = dijkstraResult;
+    const {path, time} = dijkstraResult;
     const minutes = Math.floor(time / 60);
     const seconds = time % 60 < 10 ? `0${time % 60}` : time % 60;
+    currentDelay = 0;
 
     const pathHTML = path.map((line, index) => {
+        animatePathSegment(line);
         const startStationName = stationMap.get(line.start).name;
         const endStationName = stationMap.get(line.end).name;
         const direction = getDirection(line.start, line.end, line.line);
         const metroColor = getMetroColor(line.line);
+        const delay = index * 0.2;
         return `
-            <div class="path-segment" style="border-left-color: ${metroColor};">
+            <div class="path-segment" style="border-left-color: ${metroColor}; --animation-delay: ${delay}s">
                 <div class="line-header" onclick="toggleStations(${index})">
                     <img src="assets/img/lines/default/${line.line}.png" alt="Line ${line.line} icon" class="line-icon">
                     <div>
@@ -503,7 +653,7 @@ function getPathDisplay(dijkstraResult) {
             </div>`;
 }
 
-window.toggleStations = function(index) {
+window.toggleStations = function (index) {
     const stationsList = document.getElementById(`stations-list-${index}`);
     stationsList.classList.toggle('hidden');
     const arrow = stationsList.previousElementSibling.querySelector('.expand-arrow');
