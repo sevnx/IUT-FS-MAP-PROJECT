@@ -149,7 +149,7 @@ function getMarkerForOneLineStation(station) {
     let icon;
     if (station.is_end === "False") {
         icon = {
-            url: 'assets/img/lines/empty/empty' + station.line + '.png',
+            url: 'assets/img/lines/empty/' + station.line + '.png',
             scaledSize: new google.maps.Size(7, 7),
             anchor: new google.maps.Point(3, 4)
         }
