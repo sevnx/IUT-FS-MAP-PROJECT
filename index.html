@@ -12,27 +12,36 @@
     <script src="assets/js/map.js"></script>
     <script src="assets/js/path.js"></script>
     <script src="assets/js/index.js"></script>
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.1.1/css/all.css" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.1.1/css/all.css" crossorigin="anonymous">
 </head>
 <body>
     <div id="app">
         <div id="control-panel">
             <div id="title">
-                <img class="logo" src="assets/img/map-icon.png" alt="descartographie_logo">
+                <img class="logo" src="assets/img/map-icon.png" alt="Descartographie logo">
                 <h1>Descartographie</h1>
             </div>
-            <br>
+
             <input type="text" id="departure" list="stations" placeholder="Départ">
             <input type="text" id="arrival" list="stations" placeholder="Arrivée">
+            
             <!-- Station list -->
             <datalist id="stations"></datalist>
 
             <div class="d-flex">
                 <button id="search" class="w-75">Rechercher</button>
-                <button class="btn-danger w-25" id="reset"><i class="fas fa-times"></i></button>
+                <button class="btn-danger w-20" id="reset"><i class="fas fa-times"></i></button>
             </div>
 
+            <!-- Alert -->
+            <div id="custom-alert" class="custom-alert">
+                <div id="alert-content" class="alert-content"></div>
+            </div>
+
+            <div id="overlay" class="overlay"></div>
+
+            <!-- Google Sign-In -->
             <div id="g_id_onload"
                 data-client_id="166841410239-ki6er9r9kc8cjk13skoiklrba2lkdo0u.apps.googleusercontent.com"
                 data-context="signin"
@@ -49,12 +58,12 @@
                 data-size="large"
                 data-logo_alignment="left">
             </div>
+
             <hr>
-            <div id="path">
 
-            </div>
-
+            <div id="path"></div>
         </div>
+
         <div id="commands">
             <button id="returnToCenter"><i class="fas fa-house"></i></button>
             <button id="zoomInBtn"><i class="fas fa-plus"></i></button>
@@ -62,8 +71,7 @@
             <button id="layerBtn"><i class="fa-solid fa-layer-group"></i></button>
         </div>
 
-        <div id="map">
-        </div>
+        <div id="map"></div>
     </div>
     
     <footer>

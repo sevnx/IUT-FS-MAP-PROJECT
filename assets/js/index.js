@@ -49,6 +49,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     }, 500);
 });
 
+/* Commands */
+
 function defineActionButtons() {
     document.getElementById("zoomInBtn").addEventListener('click', () => {
         map.setZoom(map.getZoom() + 1)
@@ -64,9 +66,35 @@ function defineActionButtons() {
     });
 
     document.getElementById("layerBtn").addEventListener('click', () => {
-        map.setMapTypeId(satelliteToggle ? "roadmap" : "satellite")
-        satelliteToggle = !satelliteToggle
+        map.setMapTypeId(satelliteToggle ? "roadmap" : "satellite");
+        satelliteToggle = !satelliteToggle;
+    
+        updateButtonStyles();
     });
+
+    function handleHover(button, hoverColor, defaultColor) {
+        button.addEventListener('mouseover', () => {
+            button.style.backgroundColor = hoverColor;
+        });
+
+        button.addEventListener('mouseout', () => {
+            button.style.backgroundColor = defaultColor;
+        });
+    }
+
+    function updateButtonStyles() {
+        var buttons = document.querySelectorAll('#returnToCenter, #zoomInBtn, #zoomOutBtn, #layerBtn');
+
+        buttons.forEach(function(button) {
+            if (satelliteToggle) {
+                button.style.backgroundColor = 'var(--black-color)';
+                handleHover(button, 'var(--yellow-color)', 'var(--black-color)');
+            } else {
+                button.style.backgroundColor = 'var(--purple-color)';
+                handleHover(button, 'var(--green-color)', 'var(--purple-color)');
+            }
+        });
+    }
 
     document.getElementById("reset").addEventListener('click', () => {
         resetDisplay();
@@ -96,6 +124,8 @@ function defineActionButtons() {
         secondStationSelect = setSelect(stationMap.get(getStationIdsFromName(arrival)[0]), stationMarkers.get(arrival));
     });
 }
+
+/* Metro Colors */
 
 function getMetroColor(line) {
     switch (line) {
@@ -142,6 +172,8 @@ function getLinesForStation(stationName, stations) {
         .map(station => station.line);
 }
 
+/* Markers */
+
 function getPopupContentForStation(station, stations) {
     const lines = getLinesForStation(station.name, stations);
     let imagesOfLinesForStation = '';
@@ -151,16 +183,14 @@ function getPopupContentForStation(station, stations) {
         `;
     });
     return `
-    <div style="display: flex;align-items: center">
-        <div class="metro-station-lines">
-            ${imagesOfLinesForStation}
+        <div style="display: flex;align-items: center">
+            <div class="metro-station-lines">
+                ${imagesOfLinesForStation}
+            </div>
+            <strong>${station.name}</strong>
         </div>
-        <strong>${station.name}</strong>
-    </div>
     `;
 }
-
-/** MARKERS **/
 
 function getMarkerForOneLineStation(station) {
     let icon;
@@ -209,7 +239,11 @@ function getStationMarker(stationName, station, stations) {
     }
 }
 
-/** UTILITY FOR STATION SELECTION **/
+/* Utility For Station Selection */
+
+window.onload = function () {
+    clearInputValues();
+};
 
 function clearInputValues() {
     document.getElementById("departure").value = "";
@@ -241,7 +275,7 @@ function setSelect(station, marker) {
     }
 }
 
-/** STATION INFO WINDOW **/
+/* Station Info Window */
 
 let stationInfoWindow = null;
 
@@ -256,7 +290,7 @@ function getInfoWindow(station, stations) {
     });
 }
 
-/** STATION ADDING **/
+/* Station Adding */
 
 let stationMap = new Map();
 let stationMarkers = new Map();
@@ -357,7 +391,7 @@ function addStationsToApp(map, stations) {
     });
 }
 
-/** INTERCONNECTION ADDING **/
+/* Interconnection Adding */
 
 function getLineBetweenStations(station1, station2) {
     console.log(station1, station2);
@@ -413,7 +447,7 @@ async function loadMetro(map, stations, liaisons) {
     addInterconnectionsToApp(map, stations, liaisons);
 }
 
-/** DIJKSTRA **/
+/* Dijkstra */
 
 function getClosestStationToStart(start, end, line) {
     let notValidConnection = end.connection === "1" ? "2" : "1";
@@ -443,15 +477,12 @@ function getDirection(start, end, line) {
 
     if (startStation.connection === endStation.connection) {
         let closestStation = getClosestStationToStart(startStation, endStation, line);
-
         if (closestStation !== startStation)
             return getStartName();
         if (lineData.end.length > 1 && endStation.connection === "0")
             return `${getEndName(1)} / ${getEndName(0)}`;
-
         return getEndName(lineData.end.length > 1 ? connectionId : 0);
     }
-
     return endStation.connection === "0" ? getStartName() : getEndName(connectionId);
 }
 
@@ -466,33 +497,73 @@ function getShortestPath(stationsStart, stationsEnd) {
             }
         }
     }
-
     return shortestPath;
+}
+
+/* Alerts */
+
+function showAlert(message) {
+    const customAlert = document.getElementById('custom-alert');
+    const overlay = document.getElementById('overlay');
+
+    customAlert.style.display = 'block';
+    overlay.style.display = 'block';
+
+    const alertContent = document.getElementById('alert-content');
+    alertContent.innerHTML = `
+        <div class="alert-content-container">
+            <img src="assets/img/lines/alert.png" class="alert-image" alt="Alert icon">
+            <p>${message}</p>
+        </div>
+        <button id="close-alert">Fermer</button>
+    `;
+
+    document.getElementById('close-alert').addEventListener('click', function () {
+        customAlert.style.display = 'none';
+        overlay.style.display = 'none';
+    });
+
+    document.addEventListener('keydown', handleEscKey);
+
+    function closeAlert() {
+        customAlert.style.display = 'none';
+        overlay.style.display = 'none';
+        document.removeEventListener('keydown', handleEscKey);
+        overlay.removeEventListener('click', closeAlert);
+    }
+
+    function handleEscKey(event) {
+        if (event.key === 'Escape') {
+            closeAlert();
+        }
+    }
 }
 
 function isFromAndToValid() {
     if (!firstStationSelect.station) {
-        alert("Veuillez sélectionner une station de départ")
+        showAlert("Veuillez sélectionner une station de départ.");
         return false;
     }
     if (!secondStationSelect.station) {
-        alert("Veuillez sélectionner une station d'arrivée")
+        showAlert("Veuillez sélectionner une station d'arrivée.");
         return false;
     }
     if (firstStationSelect.station === secondStationSelect.station) {
-        alert("Veuillez sélectionner deux stations différentes")
+        showAlert("Veuillez sélectionner deux stations différentes.");
         return false;
     }
     if (getStationIdsFromName(document.getElementById("departure").value).length === 0) {
-        alert("La station de départ n'existe pas")
+        showAlert("La station de départ n'existe pas.");
         return false;
     }
     if (getStationIdsFromName(document.getElementById("arrival").value).length === 0) {
-        alert("La station d'arrivée n'existe pas")
+        showAlert("La station d'arrivée n'existe pas.");
         return false;
     }
     return true;
 }
+
+/* Animations */
 
 function reduceOpacityOfAllStationMarkers() {
     stationMarkers.forEach(marker => {
@@ -581,7 +652,6 @@ function animateDrawingPolyline(startCoord, endCoord, duration, delay, color) {
                 requestAnimationFrame(frame);
             }
         }
-
         requestAnimationFrame(frame);
     }, delay);
 }
@@ -610,6 +680,8 @@ function animatePathSegment(line) {
     returnStationMarkerToInitialOpacity(currentId);
     returnStationMarkerToInitialOpacity(line.end);
 }
+
+/* Path Display */
 
 function getPathDisplay(dijkstraResult) {
     const {path, time} = dijkstraResult;
@@ -642,15 +714,25 @@ function getPathDisplay(dijkstraResult) {
                     ${line.stations.map(station => `<li class="station-item">${stationMap.get(station).name}</li>`).join("")}
                     <li class="station-item">${endStationName}</li>
                 </ul>
-            </div>`;
+            </div>
+        `;
     }).join("");
 
-    return `<div class="path-display">
-                <div class="estimated-time-block">
-                    <p class="estimated-time"><strong>Temps estimé :</strong> ${minutes}:${seconds}</p>
-                </div>
-                ${pathHTML}
-            </div>`;
+    const savePath = `
+            <div class="save-path">
+                <button onclick="savePath()">Enregistrer le trajet</button>
+            </div>
+        `;
+    
+    return `
+        <div class="path-display">
+            <div class="estimated-time-block">
+                <p class="estimated-time"><strong>Temps estimé :</strong> ${minutes}:${seconds}</p>
+            </div>
+            ${pathHTML}
+            ${savePath}
+        </div>
+    `;
 }
 
 window.toggleStations = function (index) {
@@ -659,6 +741,11 @@ window.toggleStations = function (index) {
     const arrow = stationsList.previousElementSibling.querySelector('.expand-arrow');
     arrow.classList.toggle('rotate');
 };
+
+
+
+
+
 
 /** SIGN IN **/
 
