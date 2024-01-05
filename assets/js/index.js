@@ -68,7 +68,7 @@ function defineActionButtons() {
     document.getElementById("layerBtn").addEventListener('click', () => {
         map.setMapTypeId(satelliteToggle ? "roadmap" : "satellite");
         satelliteToggle = !satelliteToggle;
-    
+
         updateButtonStyles();
     });
 
@@ -394,7 +394,6 @@ function addStationsToApp(map, stations) {
 /* Interconnection Adding */
 
 function getLineBetweenStations(station1, station2) {
-    console.log(station1, station2);
     return new googleMapObject.Polyline({
         path: [
             {lat: station1.lat, lng: station1.lon},
@@ -486,12 +485,12 @@ function getDirection(start, end, line) {
     return endStation.connection === "0" ? getStartName() : getEndName(connectionId);
 }
 
-function getShortestPath(stationsStart, stationsEnd) {
+function getShortestPathBetween(stationsStart, stationsEnd) {
     let shortestPath = {path: null, time: Infinity};
 
     for (let start of stationsStart) {
         for (let end of stationsEnd) {
-            let result = dijkstra(stationMap, start, end);
+            let result = getShortestPath(stationMap, start, end);
             if (result.time < shortestPath.time) {
                 shortestPath = {path: result.path, time: result.time};
             }
@@ -540,6 +539,8 @@ function showAlert(message) {
 }
 
 function isFromAndToValid() {
+    let enteredDeparture = document.getElementById("departure").value;
+    let enteredArrival = document.getElementById("arrival").value;
     if (!firstStationSelect.station) {
         showAlert("Veuillez sélectionner une station de départ.");
         return false;
@@ -548,16 +549,16 @@ function isFromAndToValid() {
         showAlert("Veuillez sélectionner une station d'arrivée.");
         return false;
     }
-    if (firstStationSelect.station === secondStationSelect.station) {
-        showAlert("Veuillez sélectionner deux stations différentes.");
-        return false;
-    }
-    if (getStationIdsFromName(document.getElementById("departure").value).length === 0) {
+    if (getStationIdsFromName(enteredDeparture).length === 0) {
         showAlert("La station de départ n'existe pas.");
         return false;
     }
-    if (getStationIdsFromName(document.getElementById("arrival").value).length === 0) {
+    if (getStationIdsFromName(enteredArrival).length === 0) {
         showAlert("La station d'arrivée n'existe pas.");
+        return false;
+    }
+    if (firstStationSelect.station === secondStationSelect.station || enteredDeparture === enteredArrival) {
+        showAlert("Veuillez sélectionner deux stations différentes.");
         return false;
     }
     return true;
@@ -617,7 +618,7 @@ function searchDijkstraPathForInputtedStations() {
     reduceOpacityOfAllStationMarkers();
     let departureIds = getStationIdsFromName(document.getElementById("departure").value);
     let arrivalIds = getStationIdsFromName(document.getElementById("arrival").value);
-    document.getElementById("path").innerHTML = getPathDisplay(getShortestPath(departureIds, arrivalIds));
+    document.getElementById("path").innerHTML = getPathDisplay(getShortestPathBetween(departureIds, arrivalIds));
 }
 
 function animateDrawingPolyline(startCoord, endCoord, duration, delay, color) {
@@ -723,7 +724,7 @@ function getPathDisplay(dijkstraResult) {
                 <button onclick="savePath()">Enregistrer le trajet</button>
             </div>
         `;
-    
+
     return `
         <div class="path-display">
             <div class="estimated-time-block">
@@ -741,11 +742,6 @@ window.toggleStations = function (index) {
     const arrow = stationsList.previousElementSibling.querySelector('.expand-arrow');
     arrow.classList.toggle('rotate');
 };
-
-
-
-
-
 
 /** SIGN IN **/
 

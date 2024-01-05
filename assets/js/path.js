@@ -1,10 +1,3 @@
-/*
- * Checks if we are in the case where the path is always the same line but in different direction (Happens in lines 7 and 13)
- * @param stationMap: Map of all the stations
- * @param start: Starting station
- * @param end: Ending station
- * @return: True if we are in the case, false otherwise
-*/
 function isSameLineButDifferentTrainNeeded(stationMap, start, end) {
     let startStation = stationMap.get(start);
     let endStation = stationMap.get(end);
@@ -13,14 +6,6 @@ function isSameLineButDifferentTrainNeeded(stationMap, start, end) {
             (startStation.connection === "2" && endStation.connection === "1"));
 }
 
-/* 
- * Returns the path from start to end
- * @param stationMap: Map of all the stations
- * @param distances: Map of all the distances
- * @param start: Starting station
- * @param end: Ending station
- * @return: The path
-*/
 function getPath(stationMap, distances, start, end) {
     let path = [];
     let currentStation = end;
@@ -45,23 +30,10 @@ function getPath(stationMap, distances, start, end) {
     return path.reverse();
 }
 
-/*
- * Creates a line segment
- * @param stationMap: Map of all the stations
- * @param station: Station to add to the line segment
- * @param line: Line of the line segment
- * @return: The line segment
-*/
 function createLineSegment(stationMap, station, line = stationMap.get(station).line) {
     return {end: station, stations: [], line: line};
 }
 
-/*
- * Returns the line segment
- * @param lineStations: Line segment
- * @param start: Starting station
- * @return: The line segment
-*/
 function getLineSegment(lineStations, start) {
     return {
         end: lineStations.end,
@@ -72,12 +44,9 @@ function getLineSegment(lineStations, start) {
 }
 
 /*
- * Returns the path and the time from start to end with Dijkstra algorithm
- * @param stationMap: Map of all the stations
- * @param start: Starting station
- * @param end: Ending station
+ * Returns the path and the time from start to end using Dijkstra's algorithm
 */
-function dijkstra(stationMap, start, end) {
+function getShortestPath(stationMap, start, end) {
     let visited = [];
     let unvisited = [start];
     let distances = new Map();
