@@ -28,14 +28,18 @@ body, html {
   background-color: var(--black-color);
 }
 
-#app {
+.app {
   display: flex;
   min-height: 100vh;
 }
 
+.mt-2{
+  margin-top:1em;
+}
+
 /* Commands */
 
-#commands {
+.commands {
   position: absolute;
   right: 10px;
   top: 10px;
@@ -44,13 +48,13 @@ body, html {
   flex-direction: column;
 }
 
-#commands button {
+.commands button {
   margin-bottom: 10px;
 }
 
 /* -------------------- Control Panel -------------------- */
 
-#control-panel {
+.control-panel {
   max-height: calc(100vh - 50px);
   overflow-y: auto;
   width: 25%;
@@ -62,16 +66,16 @@ body, html {
   padding: 20px;
 }
 
-#control-panel {
+.control-panel {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-#control-panel::-webkit-scrollbar {
+.control-panel::-webkit-scrollbar {
   display: none;
 }
 
-#title {
+.title {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -84,7 +88,7 @@ body, html {
 
 /* Inputs */
 
-input[type="text"] {
+input[type="text"], input[type="password"] {
   padding: 10px;
   margin-bottom: 5%;
   border: none;
@@ -104,6 +108,15 @@ button {
   transition: background-color .3s;
 }
 
+a{
+  color: var(--white-color);
+}
+
+input.w-100{
+  box-sizing: border-box;
+  width: 100%!important;
+}
+
 button:hover {
   transition: background-color .3s;
   background-color: var(--green-color);
@@ -120,6 +133,10 @@ button:hover {
 
 .w-75 {
   width: 75%;
+}
+
+.w-100{
+  width: 100%;
 }
 
 .btn-danger {
@@ -396,20 +413,27 @@ footer {
 
 /* -------------------- Responsive -------------------- */
 
-@media only screen and (max-width: 768px) {
-  #app {
-    flex-direction: column;
-  }
-
-  #commands {
+@media only screen and (max-width: 1550px) AND (min-width: 768px) {
+  .title h1{
     display: none;
   }
 
-  #control-panel {
+}
+
+@media only screen and (max-width: 768px) {
+  .app {
+    flex-direction: column;
+  }
+
+  .commands {
+    display: none;
+  }
+
+  .control-panel {
     width: 100%;
   }
 
-  #title {
+  .title {
     padding-bottom: 20px;
   }
 
@@ -446,4 +470,9 @@ footer {
   footer {
     position: relative;
   }
+}
+
+
+.path-display *{
+  user-select: none!important;
 }

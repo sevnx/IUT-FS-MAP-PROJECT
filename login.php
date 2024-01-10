@@ -1,26 +1,19 @@
 <?php
-$dsn = "mysql:host=localhost;dbname=maps";
-$username = "root";
-$password = "";
+var_dump($_POST);
+require_once "vendor/autoload.php";
 
-$id = $_POST['id'];
-$name = $_POST['name'];
-$email = $_POST['email'];
+// Get $id_token via HTTPS POST.
+$id_token = $_POST['credential'];
+var_dump($id_token);
 
-$pdo = new PDO($dsn, $username, $password);
-
-$sql = "INSERT INTO users (id, name, email, created_at, updated_at) VALUES (:id, :name, :email, NOW(), NOW())";
-$stmt = $pdo->prepare($sql);
-
-$stmt->bindParam(':id', $id);
-$stmt->bindParam(':name', $name);
-$stmt->bindParam(':email', $email);
-
-if ($stmt->execute()) {
-    echo "User data inserted successfully";
+$client = new Google_Client();  // Specify the CLIENT_ID of the app that accesses the backend
+$client->setAccessToken("166841410239-ki6er9r9kc8cjk13skoiklrba2lkdo0u.apps.googleusercontent.com");
+$payload = $client->verifyIdToken($id_token);
+var_dump($payload);
+if ($payload) {
+  $userid = $payload['sub'];
+  // If request specified a G Suite domain:
+  //$domain = $payload['hd'];
 } else {
-    echo "Error: " . $sql . "<br>" . $stmt->errorInfo();
+  // Invalid ID token
 }
-
-$pdo = null;
-?>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Descartographie</title>
-    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="assets/imgs/favicon.png">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -16,10 +16,10 @@
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.1.1/css/all.css" crossorigin="anonymous">
 </head>
 <body>
-    <div id="app">
-        <div id="control-panel">
-            <div id="title">
-                <img class="logo" src="assets/img/map-icon.png" alt="Descartographie logo">
+    <div class="app">
+        <div class="control-panel">
+            <div class="title">
+                <img class="logo" src="assets/imgs/map-icon.png" alt="Descartographie logo">
                 <h1>Descartographie</h1>
             </div>
 
@@ -33,38 +33,28 @@
                 <button id="search" class="w-75">Rechercher</button>
                 <button class="btn-danger w-20" id="reset"><i class="fas fa-times"></i></button>
             </div>
-
+            <button class="w-100" id="loginBtn">Se connecter</button>
+            <button class="w-100" id="logoutBtn" style="display: none;">Se déconnecter</button>
+            
             <!-- Alert -->
             <div id="custom-alert" class="custom-alert">
                 <div id="alert-content" class="alert-content"></div>
             </div>
 
-            <div id="overlay" class="overlay"></div>
-
-            <!-- Google Sign-In -->
-            <div id="g_id_onload"
-                data-client_id="166841410239-ki6er9r9kc8cjk13skoiklrba2lkdo0u.apps.googleusercontent.com"
-                data-context="signin"
-                data-ux_mode="popup"
-                data-login_uri="https://descartographie.ait37.fr/login.php"
-                data-auto_prompt="false">
+            <div id="overlay" class="overlay">
             </div>
 
-            <div class="g_id_signin"
-                data-type="standard"
-                data-shape="rectangular"
-                data-theme="outline"
-                data-text="signin_with"
-                data-size="large"
-                data-logo_alignment="left">
+
+            <div id="path">
             </div>
+            
+            
+            <div id="saved-paths">
 
-            <hr>
-
-            <div id="path"></div>
+            </div>
         </div>
 
-        <div id="commands">
+        <div class="commands">
             <button id="returnToCenter"><i class="fas fa-house"></i></button>
             <button id="zoomInBtn"><i class="fas fa-plus"></i></button>
             <button id="zoomOutBtn"><i class="fas fa-minus"></i></button>

@@ -1,0 +1,2462 @@
+[
+  {
+    "station1": "0",
+    "station2": "238",
+    "time_between": "82"
+  },
+  {
+    "station1": "0",
+    "station2": "159",
+    "time_between": "92"
+  },
+  {
+    "station1": "1",
+    "station2": "12",
+    "time_between": "72"
+  },
+  {
+    "station1": "1",
+    "station2": "235",
+    "time_between": "88"
+  },
+  {
+    "station1": "2",
+    "station2": "110",
+    "time_between": "140"
+  },
+  {
+    "station1": "2",
+    "station2": "139",
+    "time_between": "100"
+  },
+  {
+    "station1": "3",
+    "station2": "262",
+    "time_between": "66"
+  },
+  {
+    "station1": "3",
+    "station2": "210",
+    "time_between": "82"
+  },
+  {
+    "station1": "4",
+    "station2": "171",
+    "time_between": "86"
+  },
+  {
+    "station1": "4",
+    "station2": "251",
+    "time_between": "70"
+  },
+  {
+    "station1": "5",
+    "station2": "13",
+    "time_between": "134"
+  },
+  {
+    "station1": "5",
+    "station2": "239",
+    "time_between": "108"
+  },
+  {
+    "station1": "6",
+    "station2": "55",
+    "time_between": "112"
+  },
+  {
+    "station1": "6",
+    "station2": "258",
+    "time_between": "92"
+  },
+  {
+    "station1": "7",
+    "station2": "290",
+    "time_between": "78"
+  },
+  {
+    "station1": "7",
+    "station2": "311",
+    "time_between": "160"
+  },
+  {
+    "station1": "8",
+    "station2": "350",
+    "time_between": "76"
+  },
+  {
+    "station1": "8",
+    "station2": "309",
+    "time_between": "116"
+  },
+  {
+    "station1": "9",
+    "station2": "338",
+    "time_between": "58"
+  },
+  {
+    "station1": "9",
+    "station2": "78",
+    "time_between": "124"
+  },
+  {
+    "station1": "10",
+    "station2": "277",
+    "time_between": "84"
+  },
+  {
+    "station1": "10",
+    "station2": "108",
+    "time_between": "72"
+  },
+  {
+    "station1": "11",
+    "station2": "154",
+    "time_between": "64"
+  },
+  {
+    "station1": "11",
+    "station2": "54",
+    "time_between": "82"
+  },
+  {
+    "station1": "12",
+    "station2": "213",
+    "time_between": "84"
+  },
+  {
+    "station1": "13",
+    "station2": "151",
+    "time_between": "114"
+  },
+  {
+    "station1": "14",
+    "station2": "124",
+    "time_between": "92"
+  },
+  {
+    "station1": "14",
+    "station2": "64",
+    "time_between": "56"
+  },
+  {
+    "station1": "15",
+    "station2": "318",
+    "time_between": "74"
+  },
+  {
+    "station1": "15",
+    "station2": "319",
+    "time_between": "146"
+  },
+  {
+    "station1": "16",
+    "station2": "119",
+    "time_between": "196"
+  },
+  {
+    "station1": "16",
+    "station2": "331",
+    "time_between": "124"
+  },
+  {
+    "station1": "17",
+    "station2": "288",
+    "time_between": "178"
+  },
+  {
+    "station1": "17",
+    "station2": "40",
+    "time_between": "82"
+  },
+  {
+    "station1": "18",
+    "station2": "163",
+    "time_between": "64"
+  },
+  {
+    "station1": "18",
+    "station2": "61",
+    "time_between": "112"
+  },
+  {
+    "station1": "19",
+    "station2": "236",
+    "time_between": "62"
+  },
+  {
+    "station1": "19",
+    "station2": "93",
+    "time_between": "66"
+  },
+  {
+    "station1": "20",
+    "station2": "129",
+    "time_between": "96"
+  },
+  {
+    "station1": "20",
+    "station2": "283",
+    "time_between": "76"
+  },
+  {
+    "station1": "21",
+    "station2": "86",
+    "time_between": "92"
+  },
+  {
+    "station1": "21",
+    "station2": "75",
+    "time_between": "102"
+  },
+  {
+    "station1": "22",
+    "station2": "84",
+    "time_between": "78"
+  },
+  {
+    "station1": "22",
+    "station2": "120",
+    "time_between": "162"
+  },
+  {
+    "station1": "23",
+    "station2": "97",
+    "time_between": "70"
+  },
+  {
+    "station1": "23",
+    "station2": "287",
+    "time_between": "114"
+  },
+  {
+    "station1": "24",
+    "station2": "84",
+    "time_between": "102"
+  },
+  {
+    "station1": "25",
+    "station2": "193",
+    "time_between": "84"
+  },
+  {
+    "station1": "25",
+    "station2": "253",
+    "time_between": "70"
+  },
+  {
+    "station1": "26",
+    "station2": "98",
+    "time_between": "62"
+  },
+  {
+    "station1": "26",
+    "station2": "230",
+    "time_between": "128"
+  },
+  {
+    "station1": "27",
+    "station2": "239",
+    "time_between": "128"
+  },
+  {
+    "station1": "27",
+    "station2": "246",
+    "time_between": "118"
+  },
+  {
+    "station1": "28",
+    "station2": "29",
+    "time_between": "158"
+  },
+  {
+    "station1": "29",
+    "station2": "374",
+    "time_between": "92"
+  },
+  {
+    "station1": "30",
+    "station2": "354",
+    "time_between": "48"
+  },
+  {
+    "station1": "30",
+    "station2": "150",
+    "time_between": "88"
+  },
+  {
+    "station1": "31",
+    "station2": "41",
+    "time_between": "56"
+  },
+  {
+    "station1": "31",
+    "station2": "144",
+    "time_between": "72"
+  },
+  {
+    "station1": "32",
+    "station2": "343",
+    "time_between": "108"
+  },
+  {
+    "station1": "32",
+    "station2": "303",
+    "time_between": "82"
+  },
+  {
+    "station1": "33",
+    "station2": "344",
+    "time_between": "104"
+  },
+  {
+    "station1": "33",
+    "station2": "304",
+    "time_between": "82"
+  },
+  {
+    "station1": "34",
+    "station2": "248",
+    "time_between": "72"
+  },
+  {
+    "station1": "34",
+    "station2": "41",
+    "time_between": "114"
+  },
+  {
+    "station1": "35",
+    "station2": "111",
+    "time_between": "68"
+  },
+  {
+    "station1": "35",
+    "station2": "172",
+    "time_between": "80"
+  },
+  {
+    "station1": "36",
+    "station2": "198",
+    "time_between": "210"
+  },
+  {
+    "station1": "36",
+    "station2": "37",
+    "time_between": "78"
+  },
+  {
+    "station1": "38",
+    "station2": "336",
+    "time_between": "70"
+  },
+  {
+    "station1": "38",
+    "station2": "289",
+    "time_between": "76"
+  },
+  {
+    "station1": "39",
+    "station2": "153",
+    "time_between": "76"
+  },
+  {
+    "station1": "39",
+    "station2": "267",
+    "time_between": "92"
+  },
+  {
+    "station1": "40",
+    "station2": "297",
+    "time_between": "74"
+  },
+  {
+    "station1": "42",
+    "station2": "190",
+    "time_between": "84"
+  },
+  {
+    "station1": "42",
+    "station2": "215",
+    "time_between": "70"
+  },
+  {
+    "station1": "43",
+    "station2": "66",
+    "time_between": "82"
+  },
+  {
+    "station1": "43",
+    "station2": "328",
+    "time_between": "114"
+  },
+  {
+    "station1": "44",
+    "station2": "162",
+    "time_between": "108"
+  },
+  {
+    "station1": "44",
+    "station2": "250",
+    "time_between": "128"
+  },
+  {
+    "station1": "45",
+    "station2": "348",
+    "time_between": "86"
+  },
+  {
+    "station1": "45",
+    "station2": "155",
+    "time_between": "70"
+  },
+  {
+    "station1": "46",
+    "station2": "242",
+    "time_between": "126"
+  },
+  {
+    "station1": "46",
+    "station2": "329",
+    "time_between": "92"
+  },
+  {
+    "station1": "47",
+    "station2": "148",
+    "time_between": "92"
+  },
+  {
+    "station1": "47",
+    "station2": "195",
+    "time_between": "82"
+  },
+  {
+    "station1": "48",
+    "station2": "182",
+    "time_between": "132"
+  },
+  {
+    "station1": "48",
+    "station2": "318",
+    "time_between": "120"
+  },
+  {
+    "station1": "49",
+    "station2": "164",
+    "time_between": "84"
+  },
+  {
+    "station1": "49",
+    "station2": "241",
+    "time_between": "80"
+  },
+  {
+    "station1": "50",
+    "station2": "77",
+    "time_between": "108"
+  },
+  {
+    "station1": "50",
+    "station2": "109",
+    "time_between": "124"
+  },
+  {
+    "station1": "51",
+    "station2": "137",
+    "time_between": "124"
+  },
+  {
+    "station1": "51",
+    "station2": "202",
+    "time_between": "138"
+  },
+  {
+    "station1": "52",
+    "station2": "201",
+    "time_between": "40"
+  },
+  {
+    "station1": "53",
+    "station2": "372",
+    "time_between": "94"
+  },
+  {
+    "station1": "53",
+    "station2": "167",
+    "time_between": "66"
+  },
+  {
+    "station1": "54",
+    "station2": "145",
+    "time_between": "102"
+  },
+  {
+    "station1": "55",
+    "station2": "127",
+    "time_between": "120"
+  },
+  {
+    "station1": "56",
+    "station2": "351",
+    "time_between": "118"
+  },
+  {
+    "station1": "56",
+    "station2": "362",
+    "time_between": "150"
+  },
+  {
+    "station1": "57",
+    "station2": "150",
+    "time_between": "70"
+  },
+  {
+    "station1": "58",
+    "station2": "307",
+    "time_between": "62"
+  },
+  {
+    "station1": "58",
+    "station2": "369",
+    "time_between": "62"
+  },
+  {
+    "station1": "59",
+    "station2": "224",
+    "time_between": "144"
+  },
+  {
+    "station1": "59",
+    "station2": "162",
+    "time_between": "106"
+  },
+  {
+    "station1": "60",
+    "station2": "299",
+    "time_between": "126"
+  },
+  {
+    "station1": "60",
+    "station2": "133",
+    "time_between": "90"
+  },
+  {
+    "station1": "61",
+    "station2": "335",
+    "time_between": "56"
+  },
+  {
+    "station1": "62",
+    "station2": "287",
+    "time_between": "106"
+  },
+  {
+    "station1": "62",
+    "station2": "216",
+    "time_between": "96"
+  },
+  {
+    "station1": "63",
+    "station2": "123",
+    "time_between": "88"
+  },
+  {
+    "station1": "63",
+    "station2": "169",
+    "time_between": "114"
+  },
+  {
+    "station1": "64",
+    "station2": "192",
+    "time_between": "114"
+  },
+  {
+    "station1": "65",
+    "station2": "342",
+    "time_between": "82"
+  },
+  {
+    "station1": "65",
+    "station2": "121",
+    "time_between": "114"
+  },
+  {
+    "station1": "67",
+    "station2": "135",
+    "time_between": "174"
+  },
+  {
+    "station1": "67",
+    "station2": "173",
+    "time_between": "102"
+  },
+  {
+    "station1": "68",
+    "station2": "136",
+    "time_between": "170"
+  },
+  {
+    "station1": "69",
+    "station2": "120",
+    "time_between": "574"
+  },
+  {
+    "station1": "69",
+    "station2": "281",
+    "time_between": "262"
+  },
+  {
+    "station1": "70",
+    "station2": "73",
+    "time_between": "90"
+  },
+  {
+    "station1": "70",
+    "station2": "165",
+    "time_between": "132"
+  },
+  {
+    "station1": "71",
+    "station2": "254",
+    "time_between": "146"
+  },
+  {
+    "station1": "71",
+    "station2": "255",
+    "time_between": "74"
+  },
+  {
+    "station1": "72",
+    "station2": "188",
+    "time_between": "104"
+  },
+  {
+    "station1": "73",
+    "station2": "330",
+    "time_between": "92"
+  },
+  {
+    "station1": "74",
+    "station2": "195",
+    "time_between": "88"
+  },
+  {
+    "station1": "74",
+    "station2": "221",
+    "time_between": "104"
+  },
+  {
+    "station1": "75",
+    "station2": "142",
+    "time_between": "186"
+  },
+  {
+    "station1": "76",
+    "station2": "156",
+    "time_between": "118"
+  },
+  {
+    "station1": "76",
+    "station2": "111",
+    "time_between": "60"
+  },
+  {
+    "station1": "77",
+    "station2": "356",
+    "time_between": "114"
+  },
+  {
+    "station1": "78",
+    "station2": "175",
+    "time_between": "82"
+  },
+  {
+    "station1": "79",
+    "station2": "177",
+    "time_between": "82"
+  },
+  {
+    "station1": "79",
+    "station2": "138",
+    "time_between": "142"
+  },
+  {
+    "station1": "80",
+    "station2": "274",
+    "time_between": "82"
+  },
+  {
+    "station1": "80",
+    "station2": "360",
+    "time_between": "98"
+  },
+  {
+    "station1": "81",
+    "station2": "178",
+    "time_between": "86"
+  },
+  {
+    "station1": "81",
+    "station2": "274",
+    "time_between": "86"
+  },
+  {
+    "station1": "82",
+    "station2": "87",
+    "time_between": "64"
+  },
+  {
+    "station1": "82",
+    "station2": "277",
+    "time_between": "94"
+  },
+  {
+    "station1": "83",
+    "station2": "243",
+    "time_between": "72"
+  },
+  {
+    "station1": "83",
+    "station2": "128",
+    "time_between": "98"
+  },
+  {
+    "station1": "85",
+    "station2": "204",
+    "time_between": "94"
+  },
+  {
+    "station1": "85",
+    "station2": "351",
+    "time_between": "92"
+  },
+  {
+    "station1": "86",
+    "station2": "211",
+    "time_between": "74"
+  },
+  {
+    "station1": "87",
+    "station2": "300",
+    "time_between": "86"
+  },
+  {
+    "station1": "88",
+    "station2": "181",
+    "time_between": "88"
+  },
+  {
+    "station1": "88",
+    "station2": "301",
+    "time_between": "94"
+  },
+  {
+    "station1": "89",
+    "station2": "90",
+    "time_between": "58"
+  },
+  {
+    "station1": "90",
+    "station2": "91",
+    "time_between": "52"
+  },
+  {
+    "station1": "91",
+    "station2": "185",
+    "time_between": "54"
+  },
+  {
+    "station1": "92",
+    "station2": "34",
+    "time_between": "74"
+  },
+  {
+    "station1": "93",
+    "station2": "97",
+    "time_between": "90"
+  },
+  {
+    "station1": "94",
+    "station2": "200",
+    "time_between": "54"
+  },
+  {
+    "station1": "94",
+    "station2": "205",
+    "time_between": "78"
+  },
+  {
+    "station1": "95",
+    "station2": "210",
+    "time_between": "96"
+  },
+  {
+    "station1": "95",
+    "station2": "292",
+    "time_between": "74"
+  },
+  {
+    "station1": "96",
+    "station2": "324",
+    "time_between": "104"
+  },
+  {
+    "station1": "96",
+    "station2": "293",
+    "time_between": "84"
+  },
+  {
+    "station1": "98",
+    "station2": "155",
+    "time_between": "138"
+  },
+  {
+    "station1": "99",
+    "station2": "358",
+    "time_between": "62"
+  },
+  {
+    "station1": "99",
+    "station2": "349",
+    "time_between": "108"
+  },
+  {
+    "station1": "100",
+    "station2": "207",
+    "time_between": "226"
+  },
+  {
+    "station1": "100",
+    "station2": "321",
+    "time_between": "118"
+  },
+  {
+    "station1": "101",
+    "station2": "293",
+    "time_between": "86"
+  },
+  {
+    "station1": "101",
+    "station2": "209",
+    "time_between": "72"
+  },
+  {
+    "station1": "102",
+    "station2": "252",
+    "time_between": "70"
+  },
+  {
+    "station1": "102",
+    "station2": "130",
+    "time_between": "74"
+  },
+  {
+    "station1": "103",
+    "station2": "327",
+    "time_between": "88"
+  },
+  {
+    "station1": "103",
+    "station2": "367",
+    "time_between": "60"
+  },
+  {
+    "station1": "104",
+    "station2": "199",
+    "time_between": "124"
+  },
+  {
+    "station1": "104",
+    "station2": "271",
+    "time_between": "80"
+  },
+  {
+    "station1": "105",
+    "station2": "296",
+    "time_between": "84"
+  },
+  {
+    "station1": "105",
+    "station2": "163",
+    "time_between": "94"
+  },
+  {
+    "station1": "106",
+    "station2": "231",
+    "time_between": "58"
+  },
+  {
+    "station1": "106",
+    "station2": "206",
+    "time_between": "72"
+  },
+  {
+    "station1": "107",
+    "station2": "335",
+    "time_between": "98"
+  },
+  {
+    "station1": "107",
+    "station2": "314",
+    "time_between": "98"
+  },
+  {
+    "station1": "108",
+    "station2": "152",
+    "time_between": "58"
+  },
+  {
+    "station1": "109",
+    "station2": "127",
+    "time_between": "118"
+  },
+  {
+    "station1": "110",
+    "station2": "332",
+    "time_between": "74"
+  },
+  {
+    "station1": "112",
+    "station2": "180",
+    "time_between": "142"
+  },
+  {
+    "station1": "113",
+    "station2": "234",
+    "time_between": "72"
+  },
+  {
+    "station1": "113",
+    "station2": "207",
+    "time_between": "94"
+  },
+  {
+    "station1": "114",
+    "station2": "263",
+    "time_between": "144"
+  },
+  {
+    "station1": "115",
+    "station2": "263",
+    "time_between": "78"
+  },
+  {
+    "station1": "115",
+    "station2": "285",
+    "time_between": "140"
+  },
+  {
+    "station1": "116",
+    "station2": "233",
+    "time_between": "100"
+  },
+  {
+    "station1": "117",
+    "station2": "148",
+    "time_between": "118"
+  },
+  {
+    "station1": "118",
+    "station2": "329",
+    "time_between": "120"
+  },
+  {
+    "station1": "118",
+    "station2": "288",
+    "time_between": "60"
+  },
+  {
+    "station1": "119",
+    "station2": "295",
+    "time_between": "82"
+  },
+  {
+    "station1": "121",
+    "station2": "124",
+    "time_between": "134"
+  },
+  {
+    "station1": "122",
+    "station2": "140",
+    "time_between": "206"
+  },
+  {
+    "station1": "122",
+    "station2": "125",
+    "time_between": "118"
+  },
+  {
+    "station1": "123",
+    "station2": "250",
+    "time_between": "102"
+  },
+  {
+    "station1": "125",
+    "station2": "340",
+    "time_between": "214"
+  },
+  {
+    "station1": "126",
+    "station2": "272",
+    "time_between": "74"
+  },
+  {
+    "station1": "126",
+    "station2": "182",
+    "time_between": "84"
+  },
+  {
+    "station1": "128",
+    "station2": "324",
+    "time_between": "84"
+  },
+  {
+    "station1": "129",
+    "station2": "311",
+    "time_between": "98"
+  },
+  {
+    "station1": "131",
+    "station2": "153",
+    "time_between": "144"
+  },
+  {
+    "station1": "131",
+    "station2": "272",
+    "time_between": "126"
+  },
+  {
+    "station1": "132",
+    "station2": "223",
+    "time_between": "136"
+  },
+  {
+    "station1": "132",
+    "station2": "327",
+    "time_between": "80"
+  },
+  {
+    "station1": "133",
+    "station2": "317",
+    "time_between": "98"
+  },
+  {
+    "station1": "134",
+    "station2": "270",
+    "time_between": "94"
+  },
+  {
+    "station1": "134",
+    "station2": "374",
+    "time_between": "106"
+  },
+  {
+    "station1": "135",
+    "station2": "331",
+    "time_between": "130"
+  },
+  {
+    "station1": "136",
+    "station2": "290",
+    "time_between": "146"
+  },
+  {
+    "station1": "137",
+    "station2": "359",
+    "time_between": "108"
+  },
+  {
+    "station1": "138",
+    "station2": "158",
+    "time_between": "114"
+  },
+  {
+    "station1": "139",
+    "station2": "355",
+    "time_between": "92"
+  },
+  {
+    "station1": "140",
+    "station2": "313",
+    "time_between": "94"
+  },
+  {
+    "station1": "141",
+    "station2": "291",
+    "time_between": "74"
+  },
+  {
+    "station1": "141",
+    "station2": "197",
+    "time_between": "98"
+  },
+  {
+    "station1": "142",
+    "station2": "339",
+    "time_between": "54"
+  },
+  {
+    "station1": "143",
+    "station2": "340",
+    "time_between": "58"
+  },
+  {
+    "station1": "143",
+    "station2": "160",
+    "time_between": "88"
+  },
+  {
+    "station1": "144",
+    "station2": "170",
+    "time_between": "92"
+  },
+  {
+    "station1": "145",
+    "station2": "373",
+    "time_between": "110"
+  },
+  {
+    "station1": "146",
+    "station2": "283",
+    "time_between": "66"
+  },
+  {
+    "station1": "146",
+    "station2": "247",
+    "time_between": "100"
+  },
+  {
+    "station1": "147",
+    "station2": "159",
+    "time_between": "88"
+  },
+  {
+    "station1": "147",
+    "station2": "191",
+    "time_between": "98"
+  },
+  {
+    "station1": "149",
+    "station2": "241",
+    "time_between": "114"
+  },
+  {
+    "station1": "149",
+    "station2": "345",
+    "time_between": "158"
+  },
+  {
+    "station1": "151",
+    "station2": "339",
+    "time_between": "186"
+  },
+  {
+    "station1": "153",
+    "station2": "245",
+    "time_between": "128"
+  },
+  {
+    "station1": "154",
+    "station2": "349",
+    "time_between": "66"
+  },
+  {
+    "station1": "156",
+    "station2": "371",
+    "time_between": "92"
+  },
+  {
+    "station1": "157",
+    "station2": "306",
+    "time_between": "72"
+  },
+  {
+    "station1": "157",
+    "station2": "291",
+    "time_between": "98"
+  },
+  {
+    "station1": "158",
+    "station2": "371",
+    "time_between": "132"
+  },
+  {
+    "station1": "160",
+    "station2": "226",
+    "time_between": "80"
+  },
+  {
+    "station1": "161",
+    "station2": "364",
+    "time_between": "56"
+  },
+  {
+    "station1": "161",
+    "station2": "184",
+    "time_between": "78"
+  },
+  {
+    "station1": "164",
+    "station2": "244",
+    "time_between": "120"
+  },
+  {
+    "station1": "165",
+    "station2": "375",
+    "time_between": "66"
+  },
+  {
+    "station1": "166",
+    "station2": "258",
+    "time_between": "76"
+  },
+  {
+    "station1": "166",
+    "station2": "252",
+    "time_between": "74"
+  },
+  {
+    "station1": "167",
+    "station2": "265",
+    "time_between": "62"
+  },
+  {
+    "station1": "168",
+    "station2": "326",
+    "time_between": "98"
+  },
+  {
+    "station1": "168",
+    "station2": "245",
+    "time_between": "56"
+  },
+  {
+    "station1": "169",
+    "station2": "341",
+    "time_between": "108"
+  },
+  {
+    "station1": "171",
+    "station2": "264",
+    "time_between": "98"
+  },
+  {
+    "station1": "172",
+    "station2": "240",
+    "time_between": "70"
+  },
+  {
+    "station1": "173",
+    "station2": "227",
+    "time_between": "68"
+  },
+  {
+    "station1": "174",
+    "station2": "221",
+    "time_between": "62"
+  },
+  {
+    "station1": "174",
+    "station2": "346",
+    "time_between": "144"
+  },
+  {
+    "station1": "175",
+    "station2": "325",
+    "time_between": "288"
+  },
+  {
+    "station1": "176",
+    "station2": "281",
+    "time_between": "142"
+  },
+  {
+    "station1": "177",
+    "station2": "225",
+    "time_between": "176"
+  },
+  {
+    "station1": "179",
+    "station2": "237",
+    "time_between": "74"
+  },
+  {
+    "station1": "180",
+    "station2": "267",
+    "time_between": "182"
+  },
+  {
+    "station1": "183",
+    "station2": "278",
+    "time_between": "102"
+  },
+  {
+    "station1": "184",
+    "station2": "260",
+    "time_between": "62"
+  },
+  {
+    "station1": "184",
+    "station2": "352",
+    "time_between": "72"
+  },
+  {
+    "station1": "185",
+    "station2": "186",
+    "time_between": "52"
+  },
+  {
+    "station1": "186",
+    "station2": "372",
+    "time_between": "66"
+  },
+  {
+    "station1": "187",
+    "station2": "188",
+    "time_between": "68"
+  },
+  {
+    "station1": "187",
+    "station2": "273",
+    "time_between": "92"
+  },
+  {
+    "station1": "189",
+    "station2": "367",
+    "time_between": "98"
+  },
+  {
+    "station1": "189",
+    "station2": "370",
+    "time_between": "70"
+  },
+  {
+    "station1": "190",
+    "station2": "269",
+    "time_between": "54"
+  },
+  {
+    "station1": "191",
+    "station2": "194",
+    "time_between": "134"
+  },
+  {
+    "station1": "192",
+    "station2": "337",
+    "time_between": "72"
+  },
+  {
+    "station1": "193",
+    "station2": "271",
+    "time_between": "76"
+  },
+  {
+    "station1": "194",
+    "station2": "276",
+    "time_between": "134"
+  },
+  {
+    "station1": "196",
+    "station2": "259",
+    "time_between": "94"
+  },
+  {
+    "station1": "197",
+    "station2": "199",
+    "time_between": "56"
+  },
+  {
+    "station1": "198",
+    "station2": "52",
+    "time_between": "84"
+  },
+  {
+    "station1": "200",
+    "station2": "257",
+    "time_between": "102"
+  },
+  {
+    "station1": "201",
+    "station2": "145",
+    "time_between": "92"
+  },
+  {
+    "station1": "202",
+    "station2": "326",
+    "time_between": "224"
+  },
+  {
+    "station1": "203",
+    "station2": "317",
+    "time_between": "106"
+  },
+  {
+    "station1": "203",
+    "station2": "332",
+    "time_between": "80"
+  },
+  {
+    "station1": "204",
+    "station2": "366",
+    "time_between": "102"
+  },
+  {
+    "station1": "205",
+    "station2": "296",
+    "time_between": "76"
+  },
+  {
+    "station1": "206",
+    "station2": "218",
+    "time_between": "90"
+  },
+  {
+    "station1": "208",
+    "station2": "361",
+    "time_between": "84"
+  },
+  {
+    "station1": "208",
+    "station2": "333",
+    "time_between": "96"
+  },
+  {
+    "station1": "209",
+    "station2": "232",
+    "time_between": "108"
+  },
+  {
+    "station1": "211",
+    "station2": "284",
+    "time_between": "98"
+  },
+  {
+    "station1": "212",
+    "station2": "275",
+    "time_between": "172"
+  },
+  {
+    "station1": "212",
+    "station2": "295",
+    "time_between": "128"
+  },
+  {
+    "station1": "214",
+    "station2": "236",
+    "time_between": "84"
+  },
+  {
+    "station1": "215",
+    "station2": "307",
+    "time_between": "120"
+  },
+  {
+    "station1": "216",
+    "station2": "243",
+    "time_between": "110"
+  },
+  {
+    "station1": "217",
+    "station2": "353",
+    "time_between": "58"
+  },
+  {
+    "station1": "217",
+    "station2": "322",
+    "time_between": "74"
+  },
+  {
+    "station1": "218",
+    "station2": "294",
+    "time_between": "76"
+  },
+  {
+    "station1": "219",
+    "station2": "297",
+    "time_between": "100"
+  },
+  {
+    "station1": "219",
+    "station2": "313",
+    "time_between": "162"
+  },
+  {
+    "station1": "220",
+    "station2": "316",
+    "time_between": "70"
+  },
+  {
+    "station1": "220",
+    "station2": "315",
+    "time_between": "160"
+  },
+  {
+    "station1": "222",
+    "station2": "323",
+    "time_between": "84"
+  },
+  {
+    "station1": "222",
+    "station2": "330",
+    "time_between": "62"
+  },
+  {
+    "station1": "223",
+    "station2": "289",
+    "time_between": "86"
+  },
+  {
+    "station1": "224",
+    "station2": "282",
+    "time_between": "160"
+  },
+  {
+    "station1": "225",
+    "station2": "298",
+    "time_between": "150"
+  },
+  {
+    "station1": "226",
+    "station2": "270",
+    "time_between": "78"
+  },
+  {
+    "station1": "227",
+    "station2": "356",
+    "time_between": "76"
+  },
+  {
+    "station1": "228",
+    "station2": "255",
+    "time_between": "106"
+  },
+  {
+    "station1": "228",
+    "station2": "282",
+    "time_between": "98"
+  },
+  {
+    "station1": "229",
+    "station2": "305",
+    "time_between": "86"
+  },
+  {
+    "station1": "229",
+    "station2": "312",
+    "time_between": "128"
+  },
+  {
+    "station1": "230",
+    "station2": "354",
+    "time_between": "124"
+  },
+  {
+    "station1": "231",
+    "station2": "368",
+    "time_between": "80"
+  },
+  {
+    "station1": "232",
+    "station2": "348",
+    "time_between": "92"
+  },
+  {
+    "station1": "233",
+    "station2": "320",
+    "time_between": "66"
+  },
+  {
+    "station1": "234",
+    "station2": "249",
+    "time_between": "76"
+  },
+  {
+    "station1": "235",
+    "station2": "284",
+    "time_between": "88"
+  },
+  {
+    "station1": "237",
+    "station2": "261",
+    "time_between": "74"
+  },
+  {
+    "station1": "238",
+    "station2": "322",
+    "time_between": "54"
+  },
+  {
+    "station1": "244",
+    "station2": "352",
+    "time_between": "74"
+  },
+  {
+    "station1": "246",
+    "station2": "302",
+    "time_between": "74"
+  },
+  {
+    "station1": "247",
+    "station2": "357",
+    "time_between": "46"
+  },
+  {
+    "station1": "248",
+    "station2": "280",
+    "time_between": "114"
+  },
+  {
+    "station1": "249",
+    "station2": "273",
+    "time_between": "70"
+  },
+  {
+    "station1": "254",
+    "station2": "345",
+    "time_between": "150"
+  },
+  {
+    "station1": "256",
+    "station2": "362",
+    "time_between": "74"
+  },
+  {
+    "station1": "257",
+    "station2": "265",
+    "time_between": "52"
+  },
+  {
+    "station1": "259",
+    "station2": "36",
+    "time_between": "168"
+  },
+  {
+    "station1": "260",
+    "station2": "266",
+    "time_between": "74"
+  },
+  {
+    "station1": "261",
+    "station2": "266",
+    "time_between": "92"
+  },
+  {
+    "station1": "264",
+    "station2": "286",
+    "time_between": "82"
+  },
+  {
+    "station1": "268",
+    "station2": "337",
+    "time_between": "78"
+  },
+  {
+    "station1": "269",
+    "station2": "301",
+    "time_between": "70"
+  },
+  {
+    "station1": "275",
+    "station2": "328",
+    "time_between": "82"
+  },
+  {
+    "station1": "278",
+    "station2": "357",
+    "time_between": "118"
+  },
+  {
+    "station1": "279",
+    "station2": "320",
+    "time_between": "74"
+  },
+  {
+    "station1": "280",
+    "station2": "92",
+    "time_between": "86"
+  },
+  {
+    "station1": "285",
+    "station2": "305",
+    "time_between": "122"
+  },
+  {
+    "station1": "286",
+    "station2": "370",
+    "time_between": "70"
+  },
+  {
+    "station1": "292",
+    "station2": "361",
+    "time_between": "76"
+  },
+  {
+    "station1": "294",
+    "station2": "347",
+    "time_between": "92"
+  },
+  {
+    "station1": "298",
+    "station2": "303",
+    "time_between": "92"
+  },
+  {
+    "station1": "299",
+    "station2": "304",
+    "time_between": "96"
+  },
+  {
+    "station1": "300",
+    "station2": "341",
+    "time_between": "92"
+  },
+  {
+    "station1": "302",
+    "station2": "366",
+    "time_between": "106"
+  },
+  {
+    "station1": "306",
+    "station2": "355",
+    "time_between": "66"
+  },
+  {
+    "station1": "308",
+    "station2": "347",
+    "time_between": "58"
+  },
+  {
+    "station1": "308",
+    "station2": "338",
+    "time_between": "66"
+  },
+  {
+    "station1": "309",
+    "station2": "336",
+    "time_between": "130"
+  },
+  {
+    "station1": "310",
+    "station2": "375",
+    "time_between": "56"
+  },
+  {
+    "station1": "310",
+    "station2": "342",
+    "time_between": "134"
+  },
+  {
+    "station1": "312",
+    "station2": "350",
+    "time_between": "74"
+  },
+  {
+    "station1": "314",
+    "station2": "343",
+    "time_between": "196"
+  },
+  {
+    "station1": "315",
+    "station2": "344",
+    "time_between": "214"
+  },
+  {
+    "station1": "316",
+    "station2": "369",
+    "time_between": "54"
+  },
+  {
+    "station1": "321",
+    "station2": "359",
+    "time_between": "46"
+  },
+  {
+    "station1": "323",
+    "station2": "334",
+    "time_between": "94"
+  },
+  {
+    "station1": "325",
+    "station2": "353",
+    "time_between": "138"
+  },
+  {
+    "station1": "333",
+    "station2": "334",
+    "time_between": "64"
+  },
+  {
+    "station1": "346",
+    "station2": "358",
+    "time_between": "66"
+  },
+  {
+    "station1": "360",
+    "station2": "368",
+    "time_between": "94"
+  },
+  {
+    "station1": "363",
+    "station2": "365",
+    "time_between": "56"
+  },
+  {
+    "station1": "364",
+    "station2": "365",
+    "time_between": "56"
+  },
+  {
+    "station1": "373",
+    "station2": "196",
+    "time_between": "74"
+  },
+  {
+    "station1": "7",
+    "station2": "8",
+    "time_between": "180"
+  },
+  {
+    "station1": "13",
+    "station2": "14",
+    "time_between": "180"
+  },
+  {
+    "station1": "16",
+    "station2": "18",
+    "time_between": "240"
+  },
+  {
+    "station1": "16",
+    "station2": "17",
+    "time_between": "240"
+  },
+  {
+    "station1": "17",
+    "station2": "18",
+    "time_between": "240"
+  },
+  {
+    "station1": "20",
+    "station2": "21",
+    "time_between": "180"
+  },
+  {
+    "station1": "22",
+    "station2": "23",
+    "time_between": "180"
+  },
+  {
+    "station1": "32",
+    "station2": "33",
+    "time_between": "180"
+  },
+  {
+    "station1": "50",
+    "station2": "51",
+    "time_between": "180"
+  },
+  {
+    "station1": "55",
+    "station2": "57",
+    "time_between": "240"
+  },
+  {
+    "station1": "55",
+    "station2": "56",
+    "time_between": "240"
+  },
+  {
+    "station1": "56",
+    "station2": "57",
+    "time_between": "240"
+  },
+  {
+    "station1": "59",
+    "station2": "60",
+    "time_between": "180"
+  },
+  {
+    "station1": "67",
+    "station2": "69",
+    "time_between": "300"
+  },
+  {
+    "station1": "67",
+    "station2": "68",
+    "time_between": "300"
+  },
+  {
+    "station1": "67",
+    "station2": "70",
+    "time_between": "300"
+  },
+  {
+    "station1": "67",
+    "station2": "71",
+    "time_between": "300"
+  },
+  {
+    "station1": "68",
+    "station2": "69",
+    "time_between": "300"
+  },
+  {
+    "station1": "68",
+    "station2": "70",
+    "time_between": "300"
+  },
+  {
+    "station1": "68",
+    "station2": "71",
+    "time_between": "300"
+  },
+  {
+    "station1": "69",
+    "station2": "70",
+    "time_between": "300"
+  },
+  {
+    "station1": "69",
+    "station2": "71",
+    "time_between": "300"
+  },
+  {
+    "station1": "70",
+    "station2": "71",
+    "time_between": "300"
+  },
+  {
+    "station1": "77",
+    "station2": "79",
+    "time_between": "240"
+  },
+  {
+    "station1": "77",
+    "station2": "78",
+    "time_between": "240"
+  },
+  {
+    "station1": "78",
+    "station2": "79",
+    "time_between": "240"
+  },
+  {
+    "station1": "93",
+    "station2": "94",
+    "time_between": "180"
+  },
+  {
+    "station1": "95",
+    "station2": "96",
+    "time_between": "180"
+  },
+  {
+    "station1": "99",
+    "station2": "100",
+    "time_between": "180"
+  },
+  {
+    "station1": "109",
+    "station2": "110",
+    "time_between": "180"
+  },
+  {
+    "station1": "115",
+    "station2": "116",
+    "time_between": "180"
+  },
+  {
+    "station1": "117",
+    "station2": "118",
+    "time_between": "180"
+  },
+  {
+    "station1": "119",
+    "station2": "120",
+    "time_between": "180"
+  },
+  {
+    "station1": "121",
+    "station2": "123",
+    "time_between": "240"
+  },
+  {
+    "station1": "121",
+    "station2": "122",
+    "time_between": "240"
+  },
+  {
+    "station1": "122",
+    "station2": "123",
+    "time_between": "240"
+  },
+  {
+    "station1": "124",
+    "station2": "125",
+    "time_between": "180"
+  },
+  {
+    "station1": "132",
+    "station2": "133",
+    "time_between": "180"
+  },
+  {
+    "station1": "135",
+    "station2": "136",
+    "time_between": "180"
+  },
+  {
+    "station1": "137",
+    "station2": "138",
+    "time_between": "180"
+  },
+  {
+    "station1": "142",
+    "station2": "144",
+    "time_between": "240"
+  },
+  {
+    "station1": "142",
+    "station2": "143",
+    "time_between": "240"
+  },
+  {
+    "station1": "143",
+    "station2": "144",
+    "time_between": "240"
+  },
+  {
+    "station1": "148",
+    "station2": "149",
+    "time_between": "180"
+  },
+  {
+    "station1": "154",
+    "station2": "156",
+    "time_between": "240"
+  },
+  {
+    "station1": "154",
+    "station2": "155",
+    "time_between": "240"
+  },
+  {
+    "station1": "155",
+    "station2": "156",
+    "time_between": "240"
+  },
+  {
+    "station1": "169",
+    "station2": "170",
+    "time_between": "180"
+  },
+  {
+    "station1": "175",
+    "station2": "177",
+    "time_between": "240"
+  },
+  {
+    "station1": "175",
+    "station2": "176",
+    "time_between": "240"
+  },
+  {
+    "station1": "176",
+    "station2": "177",
+    "time_between": "240"
+  },
+  {
+    "station1": "191",
+    "station2": "192",
+    "time_between": "180"
+  },
+  {
+    "station1": "196",
+    "station2": "197",
+    "time_between": "180"
+  },
+  {
+    "station1": "198",
+    "station2": "199",
+    "time_between": "180"
+  },
+  {
+    "station1": "202",
+    "station2": "203",
+    "time_between": "180"
+  },
+  {
+    "station1": "206",
+    "station2": "208",
+    "time_between": "300"
+  },
+  {
+    "station1": "206",
+    "station2": "207",
+    "time_between": "300"
+  },
+  {
+    "station1": "206",
+    "station2": "209",
+    "time_between": "300"
+  },
+  {
+    "station1": "207",
+    "station2": "208",
+    "time_between": "300"
+  },
+  {
+    "station1": "207",
+    "station2": "209",
+    "time_between": "300"
+  },
+  {
+    "station1": "208",
+    "station2": "209",
+    "time_between": "300"
+  },
+  {
+    "station1": "212",
+    "station2": "214",
+    "time_between": "300"
+  },
+  {
+    "station1": "212",
+    "station2": "213",
+    "time_between": "300"
+  },
+  {
+    "station1": "212",
+    "station2": "215",
+    "time_between": "300"
+  },
+  {
+    "station1": "213",
+    "station2": "214",
+    "time_between": "300"
+  },
+  {
+    "station1": "213",
+    "station2": "215",
+    "time_between": "300"
+  },
+  {
+    "station1": "214",
+    "station2": "215",
+    "time_between": "300"
+  },
+  {
+    "station1": "219",
+    "station2": "220",
+    "time_between": "180"
+  },
+  {
+    "station1": "221",
+    "station2": "222",
+    "time_between": "180"
+  },
+  {
+    "station1": "223",
+    "station2": "225",
+    "time_between": "240"
+  },
+  {
+    "station1": "223",
+    "station2": "224",
+    "time_between": "240"
+  },
+  {
+    "station1": "224",
+    "station2": "225",
+    "time_between": "240"
+  },
+  {
+    "station1": "227",
+    "station2": "228",
+    "time_between": "180"
+  },
+  {
+    "station1": "231",
+    "station2": "232",
+    "time_between": "180"
+  },
+  {
+    "station1": "238",
+    "station2": "239",
+    "time_between": "180"
+  },
+  {
+    "station1": "242",
+    "station2": "244",
+    "time_between": "240"
+  },
+  {
+    "station1": "242",
+    "station2": "243",
+    "time_between": "240"
+  },
+  {
+    "station1": "243",
+    "station2": "244",
+    "time_between": "240"
+  },
+  {
+    "station1": "245",
+    "station2": "246",
+    "time_between": "180"
+  },
+  {
+    "station1": "247",
+    "station2": "248",
+    "time_between": "180"
+  },
+  {
+    "station1": "278",
+    "station2": "279",
+    "time_between": "180"
+  },
+  {
+    "station1": "281",
+    "station2": "282",
+    "time_between": "180"
+  },
+  {
+    "station1": "284",
+    "station2": "285",
+    "time_between": "180"
+  },
+  {
+    "station1": "292",
+    "station2": "293",
+    "time_between": "180"
+  },
+  {
+    "station1": "295",
+    "station2": "296",
+    "time_between": "180"
+  },
+  {
+    "station1": "298",
+    "station2": "299",
+    "time_between": "180"
+  },
+  {
+    "station1": "303",
+    "station2": "304",
+    "time_between": "180"
+  },
+  {
+    "station1": "309",
+    "station2": "310",
+    "time_between": "180"
+  },
+  {
+    "station1": "311",
+    "station2": "313",
+    "time_between": "300"
+  },
+  {
+    "station1": "311",
+    "station2": "312",
+    "time_between": "300"
+  },
+  {
+    "station1": "311",
+    "station2": "314",
+    "time_between": "300"
+  },
+  {
+    "station1": "311",
+    "station2": "315",
+    "time_between": "300"
+  },
+  {
+    "station1": "312",
+    "station2": "313",
+    "time_between": "300"
+  },
+  {
+    "station1": "312",
+    "station2": "314",
+    "time_between": "300"
+  },
+  {
+    "station1": "312",
+    "station2": "315",
+    "time_between": "300"
+  },
+  {
+    "station1": "313",
+    "station2": "314",
+    "time_between": "300"
+  },
+  {
+    "station1": "313",
+    "station2": "315",
+    "time_between": "300"
+  },
+  {
+    "station1": "314",
+    "station2": "315",
+    "time_between": "300"
+  },
+  {
+    "station1": "325",
+    "station2": "327",
+    "time_between": "240"
+  },
+  {
+    "station1": "325",
+    "station2": "326",
+    "time_between": "240"
+  },
+  {
+    "station1": "326",
+    "station2": "327",
+    "time_between": "240"
+  },
+  {
+    "station1": "339",
+    "station2": "341",
+    "time_between": "240"
+  },
+  {
+    "station1": "339",
+    "station2": "340",
+    "time_between": "240"
+  },
+  {
+    "station1": "340",
+    "station2": "341",
+    "time_between": "240"
+  },
+  {
+    "station1": "342",
+    "station2": "344",
+    "time_between": "240"
+  },
+  {
+    "station1": "342",
+    "station2": "343",
+    "time_between": "240"
+  },
+  {
+    "station1": "343",
+    "station2": "344",
+    "time_between": "240"
+  },
+  {
+    "station1": "346",
+    "station2": "347",
+    "time_between": "180"
+  },
+  {
+    "station1": "354",
+    "station2": "355",
+    "time_between": "180"
+  },
+  {
+    "station1": "366",
+    "station2": "367",
+    "time_between": "180"
+  },
+  {
+    "station1": "381",
+    "station2": "024",
+    "time_between": "120"
+  },
+  {
+    "station1": "262",
+    "station2": "420",
+    "time_between": "120"
+  },
+  {
+    "station1": "420",
+    "station2": "377",
+    "time_between": "120"
+  },
+  {
+    "station1": "377",
+    "station2": "376",
+    "time_between": "120"
+  },
+  {
+    "station1": "89",
+    "station2": "386",
+    "time_between": "120"
+  },
+  {
+    "station1": "276",
+    "station2": "384",
+    "time_between": "120"
+  },
+  {
+    "station1": "384",
+    "station2": "378",
+    "time_between": "120"
+  },
+  {
+    "station1": "379",
+    "station2": "378",
+    "time_between": "120"
+  },
+  {
+    "station1": "390",
+    "station2": "385",
+    "time_between": "120"
+  },
+  {
+    "station1": "390",
+    "station2": "382",
+    "time_between": "120"
+  },
+  {
+    "station1": "382",
+    "station2": "391",
+    "time_between": "120"
+  },
+  {
+    "station1": "400",
+    "station2": "385",
+    "time_between": "120"
+  },
+  {
+    "station1": "112",
+    "station2": "380",
+    "time_between": "120"
+  },
+  {
+    "station1": "380",
+    "station2": "383",
+    "time_between": "120"
+  },
+  {
+    "station1": "391",
+    "station2": "182",
+    "time_between": "120"
+  },
+  {
+    "station1": "400",
+    "station2": "326",
+    "time_between": "180"
+  },
+  {
+    "station1": "400",
+    "station2": "325",
+    "time_between": "180"
+  },
+  {
+    "station1": "400",
+    "station2": "327",
+    "time_between": "180"
+  },
+  {
+    "station1": "400",
+    "station2": "176",
+    "time_between": "60"
+  },
+  {
+    "station1": "267",
+    "station2": "390",
+    "time_between": "60"
+  }
+]

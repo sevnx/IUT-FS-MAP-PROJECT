@@ -4,10 +4,12 @@ let firstStationSelect;
 let secondStationSelect;
 let satelliteToggle = false;
 let googleMapObject = google.maps;
+let currentUser = null
+let apiKey = "POAJFF8AH20F221NJHP30"
 
 function getBlinkingIcon(isActive) {
     return {
-        url: 'assets/img/lines/' + (isActive ? 'connection' : 'selected') + '.png',
+        url: 'assets/imgs/lines/' + (isActive ? 'connection' : 'selected') + '.png',
         scaledSize: new googleMapObject.Size(12, 12),
         anchor: new googleMapObject.Point(5, 6)
     }
@@ -47,6 +49,121 @@ document.addEventListener("DOMContentLoaded", async function () {
             secondStationSelect.marker.current.setIcon(getBlinkingIcon(blinkIsActive));
         blinkIsActive = !blinkIsActive
     }, 500);
+
+
+    var xhr = new XMLHttpRequest();
+    var url = 'https://descartographie.ait37.fr/api.php';
+    var params = 'action=getUserConnected&key='+apiKey+'';
+
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            console.log(xhr.responseText); 
+            if(xhr.responseText != "NK"){
+                document.getElementById("loginBtn").style.display = "none"
+                document.getElementById("logoutBtn").style.display = "block"
+                document.getElementById("logoutBtn").innerHTML = "<i class='fas fa-user'></i> " + JSON.parse(xhr.responseText).name + " - Se déconnecter"
+                currentUser = JSON.parse(xhr.responseText).name
+            }
+        }
+    }
+
+    xhr.send(params);
+
+    document.getElementById("loginBtn").addEventListener('click', () => {
+        showLoginModal()
+    })
+
+    function showLoginModal() {
+        
+        showAlert(`
+        <form method="post" id="connectMe" class="w-100">
+        
+        <div class="estimated-time-block" >
+        <p class="estimated-time"><strong>Identifiant</strong></p>
+        </div>
+        <input type="text" placeholder="E-Mail" id="inputMail" class="w-100">
+        <input type="password" id="inputPass" placeholder="Mot de passe" class="w-100">
+        <button type="submit" class="w-100 mt-2">Se connecter</button>
+        <a href="#" id="registerBtn">S'inscrire</a>
+        </form>
+        `, false,15)
+
+        document.getElementById("connectMe").addEventListener("submit", (e) => {
+            e.preventDefault();
+            email = document.getElementById("inputMail").value
+            password = document.getElementById("inputPass").value
+
+            var xhr = new XMLHttpRequest();
+            var url = 'https://descartographie.ait37.fr/api.php';
+            var params = 'action=login&key='+apiKey+'&email=' + email + '&password=' + password;
+
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log(xhr.responseText); 
+                    if(xhr.responseText == "OK"){
+                        showAlert("Vous êtes connecté !")
+                        window.location.reload()
+                    }else{
+                        showAlert("Identifiants incorrects")
+                    }
+                }
+            }
+
+            xhr.send(params);
+
+        })
+
+        document.getElementById("registerBtn").addEventListener("click", (e) => {
+            showAlert(`
+            <form method="post" id="registerMe" class="w-100">
+            
+            <div class="estimated-time-block" >
+            <p class="estimated-time"><strong>Enregistrement</strong></p>
+            </div>
+            <input type="text" id="inputName" placeholder="Nom" class="w-100">
+            <input type="text" id="inputMail" placeholder="E-Mail" class="w-100">
+            <input type="password" id="inputPass" placeholder="Mot de passe" class="w-100">
+            <button type="submit" class="w-100 mt-2">S'enregistrer</button>
+            <a href="#" id="loginOnModal">Se connecter</a>
+            </form>
+            `, false,15)
+
+            document.getElementById("loginOnModal").addEventListener('click', () => {
+                showLoginModal()
+            })
+        })
+        
+    }
+    
+    document.getElementById("logoutBtn").addEventListener('click', () => {
+            
+        var xhr = new XMLHttpRequest();
+        var url = 'https://descartographie.ait37.fr/api.php';
+        var params = 'action=logout&key='+apiKey+'';
+
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                console.log(xhr.responseText); 
+                if(xhr.responseText != "NK"){
+                    showAlert(`Déconnecté !`, false)
+                    window.location.reload()
+                }
+            }
+        }
+
+        xhr.send(params);
+
+
+    })
 });
 
 /* Commands */
@@ -123,7 +240,12 @@ function defineActionButtons() {
         }
         secondStationSelect = setSelect(stationMap.get(getStationIdsFromName(arrival)[0]), stationMarkers.get(arrival));
     });
+
+
+    getSavedPaths()
+
 }
+
 
 /* Metro Colors */
 
@@ -179,7 +301,7 @@ function getPopupContentForStation(station, stations) {
     let imagesOfLinesForStation = '';
     lines.forEach(line => {
         imagesOfLinesForStation += `
-            <img src="assets/img/lines/default/${line}.png" alt="Line ${line} icon" class="line-popup-icon">
+            <img src="assets/imgs/lines/default/${line}.png" alt="Line ${line} icon" class="line-popup-icon">
         `;
     });
     return `
@@ -196,13 +318,13 @@ function getMarkerForOneLineStation(station) {
     let icon;
     if (station.is_end === "False") {
         icon = {
-            url: 'assets/img/lines/empty/' + station.line + '.png',
+            url: 'assets/imgs/lines/empty/' + station.line + '.png',
             scaledSize: new googleMapObject.Size(7, 7),
             anchor: new googleMapObject.Point(3, 4)
         }
     } else {
         icon = {
-            url: 'assets/img/lines/default/' + station.line + '.png',
+            url: 'assets/imgs/lines/default/' + station.line + '.png',
             scaledSize: new googleMapObject.Size(14, 14),
             anchor: new googleMapObject.Point(7, 7)
         }
@@ -223,7 +345,7 @@ function getMarkerForMultiLineStation(station) {
         map: map,
         // animation: googleMapObject.Animation.DROP,
         icon: {
-            url: 'assets/img/lines/connection.png',
+            url: 'assets/imgs/lines/connection.png',
             scaledSize: new googleMapObject.Size(9, 9),
             anchor: new googleMapObject.Point(4, 4)
         }
@@ -242,6 +364,9 @@ function getStationMarker(stationName, station, stations) {
 /* Utility For Station Selection */
 
 window.onload = function () {
+    if(window.location.protocol === 'file:') {
+        showAlert("Vous lancez l'application en local et non depuis un serveur web.<br>Les fonctionnalités de sauvegarde, connexion etc ne seront pas disponibles.");
+    }
     clearInputValues();
 };
 
@@ -259,7 +384,7 @@ function resetMarkersToInitial() {
 
 function getSelectedIcon() {
     return {
-        url: 'assets/img/lines/selected.png',
+        url: 'assets/imgs/lines/selected.png',
         scaledSize: new googleMapObject.Size(12, 12),
         anchor: new googleMapObject.Point(5, 6)
     }
@@ -501,21 +626,34 @@ function getShortestPathBetween(stationsStart, stationsEnd) {
 
 /* Alerts */
 
-function showAlert(message) {
+function showAlert(message, logo=true,width=-1) {
     const customAlert = document.getElementById('custom-alert');
+
+    console.log(width)
+    if(width != -1 && document.querySelector('body').offsetWidth > 720){
+        customAlert.style.width = width+"%"
+    }
+
     const overlay = document.getElementById('overlay');
 
     customAlert.style.display = 'block';
     overlay.style.display = 'block';
 
     const alertContent = document.getElementById('alert-content');
-    alertContent.innerHTML = `
-        <div class="alert-content-container">
-            <img src="assets/img/lines/alert.png" class="alert-image" alt="Alert icon">
-            <p>${message}</p>
+    
+    html = `
+        <div class="alert-content-container">`
+
+        if(logo){
+            html += `<img src="assets/imgs/lines/alert.png" class="alert-image" alt="Alert icon"></img>`
+        }
+
+    html += `<p>${message}</p>
         </div>
         <button id="close-alert">Fermer</button>
     `;
+    
+    alertContent.innerHTML = html
 
     document.getElementById('close-alert').addEventListener('click', function () {
         customAlert.style.display = 'none';
@@ -618,7 +756,7 @@ function searchDijkstraPathForInputtedStations() {
     reduceOpacityOfAllStationMarkers();
     let departureIds = getStationIdsFromName(document.getElementById("departure").value);
     let arrivalIds = getStationIdsFromName(document.getElementById("arrival").value);
-    document.getElementById("path").innerHTML = getPathDisplay(getShortestPathBetween(departureIds, arrivalIds));
+    document.getElementById("path").innerHTML = "<hr>" + getPathDisplay(getShortestPathBetween(departureIds, arrivalIds));
 }
 
 function animateDrawingPolyline(startCoord, endCoord, duration, delay, color) {
@@ -683,11 +821,31 @@ function animatePathSegment(line) {
 }
 
 /* Path Display */
-
+currentPathTime = ""
 function getPathDisplay(dijkstraResult) {
+
     const {path, time} = dijkstraResult;
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60 < 10 ? `0${time % 60}` : time % 60;
+    let hours = Math.floor(time / 3600).toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+
+    if(hours > 0){
+        hours = hours + ":"
+    }else{
+        hours = ""
+    }   
+    console.log(hours)
+
+    const minutes = Math.floor((time % 3600) / 60).toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+    const seconds = Math.floor(time % 60).toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+
     currentDelay = 0;
 
     const pathHTML = path.map((line, index) => {
@@ -700,15 +858,15 @@ function getPathDisplay(dijkstraResult) {
         return `
             <div class="path-segment" style="border-left-color: ${metroColor}; --animation-delay: ${delay}s">
                 <div class="line-header" onclick="toggleStations(${index})">
-                    <img src="assets/img/lines/default/${line.line}.png" alt="Line ${line.line} icon" class="line-icon">
+                    <img src="assets/imgs/lines/default/${line.line}.png" alt="Line ${line.line} icon" class="line-icon">
                     <div>
                         <div class="line-start-station">${startStationName}</div>
                         <div class="line-direction"> 
-                            <img src="assets/img/lines/arrow/${line.line}.png" alt="Arrow icon" class="arrow-icon">
+                            <img src="assets/imgs/lines/arrow/${line.line}.png" alt="Arrow icon" class="arrow-icon">
                             ${direction}
                         </div>
                     </div>
-                    <img src="assets/img/lines/arrow.png" alt="Arrow icon" class="expand-arrow">
+                    <img src="assets/imgs/lines/arrow.png" alt="Arrow icon" class="expand-arrow">
                 </div>
                 <ul class="stations-list hidden" id="stations-list-${index}">
                     <li class="station-item">${startStationName}</li>
@@ -719,6 +877,9 @@ function getPathDisplay(dijkstraResult) {
         `;
     }).join("");
 
+    currentPathTime = hours+minutes+":"+seconds
+    console.log(currentPathTime)
+
     const savePath = `
             <div class="save-path">
                 <button onclick="savePath()">Enregistrer le trajet</button>
@@ -728,7 +889,7 @@ function getPathDisplay(dijkstraResult) {
     return `
         <div class="path-display">
             <div class="estimated-time-block">
-                <p class="estimated-time"><strong>Temps estimé :</strong> ${minutes}:${seconds}</p>
+                <p class="estimated-time"><strong>Temps estimé :</strong> ${currentPathTime}</p>
             </div>
             ${pathHTML}
             ${savePath}
@@ -752,7 +913,8 @@ function onSignIn(googleUser) {
     var name = profile.getName();
     var email = profile.getEmail();
 
-    userDataToBack(profile.getId(), name, email);
+    console.log(profile)
+    // userDataToBack(profile.getId(), name, email);
 }
 
 function userDataToBack(id, name, email) {
@@ -770,4 +932,113 @@ function userDataToBack(id, name, email) {
     };
 
     xhr.send(params);
+}
+
+function savePath() {
+
+    if(currentUser == null){
+        showAlert("Vous devez être connecté pour enregistrer un trajet.")
+        return
+    }
+
+    pathName = prompt("Entrez le nom du trajet :"); 
+    var xhr = new XMLHttpRequest();
+    var url = 'https://descartographie.ait37.fr/api.php';
+    var params = 'action=savePath&key='+apiKey+'&start=' + encodeURIComponent(document.getElementById("departure").value) + '&end=' + encodeURIComponent(document.getElementById("arrival").value) + '&estimated_time=' + currentPathTime + '&name='+pathName;
+
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            console.log(xhr.responseText); 
+        }
+    };
+
+    xhr.send(params);
+    getSavedPaths()
+}
+
+
+function getSavedPaths() {
+    
+    //Request to get saved paths
+    var xhr = new XMLHttpRequest();
+    var url = 'https://descartographie.ait37.fr/api.php';
+    var params = 'action=getSavedPaths&key='+apiKey+'';
+
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    xhr.onreadystatechange = function () {
+
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var response = JSON.parse(xhr.responseText);
+            console.log("fez",response)
+            var paths = response.paths;
+            var pathsContainer = document.getElementById('saved-paths');
+
+            if (paths.length > 0) {
+                totalHTML = `
+                <hr>
+                <div class="estimated-time-block" >
+                <p class="estimated-time"><strong>Vos trajets enregistrés</strong></p>
+                </div>`;
+                paths.forEach(function (path) {
+                    console.log(path)
+                    totalHTML += `
+                    <div class="path-segment mt-2" data-action="saved-path" data-from="${path.start}" data-to="${path.end}" style="border-left-color: #FFF">
+                        <div class="line-header">
+                            <div>
+                                <div class="line-start-station">${path.name} (${path.estimated_time})</div>
+                                <div class="line-direction"> 
+                                    ${path.start}
+                                    <img src="assets/imgs/lines/arrow.png" alt="Arrow icon" class="arrow-icon">
+                                    ${path.end}
+                                </div>
+                            </div>
+                            <img src="assets/imgs/lines/arrow.png" alt="Arrow icon" class="expand-arrow">
+                        </div>
+                    </div>
+                    `;
+                })
+
+                pathsContainer.innerHTML = totalHTML
+                
+                /** SAVED PATHS **/
+                pathButtons = document.querySelectorAll('[data-action="saved-path"]')
+                console.log(pathButtons)
+                if(pathButtons){
+                    for (let i = 0; i < pathButtons.length; i++) {
+                        let button = pathButtons[i];
+                        button.addEventListener('click', function (e) {
+                            document.getElementById("departure").value = button.dataset.from;
+                            deletePathShow();
+                            restoreDefaultOpacity();
+                            let departure = document.getElementById("departure").value;
+                            if (getStationIdsFromName(departure).length === 0) {
+                                return;
+                            }
+                            firstStationSelect = setSelect(stationMap.get(getStationIdsFromName(departure)[0]), stationMarkers.get(departure));
+                            
+                            document.getElementById("arrival").value = button.dataset.to;
+                            let arrival = document.getElementById("arrival").value;
+                            if (getStationIdsFromName(arrival).length === 0) {
+                                return;
+                            }
+                            secondStationSelect = setSelect(stationMap.get(getStationIdsFromName(arrival)[0]), stationMarkers.get(arrival));
+                    
+                            searchDijkstraPathForInputtedStations()
+                        })
+                    }
+                }
+            }else{
+                pathsContainer.innerHTML = '';
+            }
+        }
+    }
+
+    xhr.send(params);
+
+    
 }
