@@ -53,15 +53,15 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     var xhr = new XMLHttpRequest();
     var url = 'https://descartographie.ait37.fr/api.php';
-    var params = 'action=getUserConnected&key='+apiKey+'';
+    var params = 'action=getUserConnected&key=' + apiKey + '';
 
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            console.log(xhr.responseText); 
-            if(xhr.responseText != "NK"){
+            console.log(xhr.responseText);
+            if (xhr.responseText != "NK") {
                 document.getElementById("loginBtn").style.display = "none"
                 document.getElementById("logoutBtn").style.display = "block"
                 document.getElementById("logoutBtn").innerHTML = "<i class='fas fa-user'></i> " + JSON.parse(xhr.responseText).name + " - Se déconnecter"
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     })
 
     function showLoginModal() {
-        
+
         showAlert(`
         <form method="post" id="connectMe" class="w-100">
         
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         <button type="submit" class="w-100 mt-2">Se connecter</button>
         <a href="#" id="registerBtn">S'inscrire</a>
         </form>
-        `, false,15)
+        `, false, 15)
 
         document.getElementById("connectMe").addEventListener("submit", (e) => {
             e.preventDefault();
@@ -98,18 +98,18 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             var xhr = new XMLHttpRequest();
             var url = 'https://descartographie.ait37.fr/api.php';
-            var params = 'action=login&key='+apiKey+'&email=' + email + '&password=' + password;
+            var params = 'action=login&key=' + apiKey + '&email=' + email + '&password=' + password;
 
             xhr.open('POST', url, true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                    console.log(xhr.responseText); 
-                    if(xhr.responseText == "OK"){
+                    console.log(xhr.responseText);
+                    if (xhr.responseText == "OK") {
                         showAlert("Vous êtes connecté !")
                         window.location.reload()
-                    }else{
+                    } else {
                         showAlert("Identifiants incorrects")
                     }
                 }
@@ -132,28 +132,28 @@ document.addEventListener("DOMContentLoaded", async function () {
             <button type="submit" class="w-100 mt-2">S'enregistrer</button>
             <a href="#" id="loginOnModal">Se connecter</a>
             </form>
-            `, false,15)
+            `, false, 15)
 
             document.getElementById("loginOnModal").addEventListener('click', () => {
                 showLoginModal()
             })
         })
-        
+
     }
-    
+
     document.getElementById("logoutBtn").addEventListener('click', () => {
-            
+
         var xhr = new XMLHttpRequest();
         var url = 'https://descartographie.ait37.fr/api.php';
-        var params = 'action=logout&key='+apiKey+'';
+        var params = 'action=logout&key=' + apiKey + '';
 
         xhr.open('POST', url, true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
-                console.log(xhr.responseText); 
-                if(xhr.responseText != "NK"){
+                console.log(xhr.responseText);
+                if (xhr.responseText != "NK") {
                     showAlert(`Déconnecté !`, false)
                     window.location.reload()
                 }
@@ -202,7 +202,7 @@ function defineActionButtons() {
     function updateButtonStyles() {
         var buttons = document.querySelectorAll('#returnToCenter, #zoomInBtn, #zoomOutBtn, #layerBtn');
 
-        buttons.forEach(function(button) {
+        buttons.forEach(function (button) {
             if (satelliteToggle) {
                 button.style.backgroundColor = 'var(--black-color)';
                 handleHover(button, 'var(--yellow-color)', 'var(--black-color)');
@@ -225,7 +225,16 @@ function defineActionButtons() {
         deletePathShow();
         restoreDefaultOpacity();
         let departure = document.getElementById("departure").value;
+        if (firstStationSelect.station) {
+            resetMarkersToInitial();
+        }
         if (getStationIdsFromName(departure).length === 0) {
+            return;
+        }
+        if (secondStationSelect.station && secondStationSelect.station.name === departure) {
+            showAlert("Veuillez sélectionner deux stations différentes.");
+            document.getElementById("departure").value = "";
+            resetMarkersToInitial();
             return;
         }
         firstStationSelect = setSelect(stationMap.get(getStationIdsFromName(departure)[0]), stationMarkers.get(departure));
@@ -236,6 +245,15 @@ function defineActionButtons() {
         restoreDefaultOpacity();
         let arrival = document.getElementById("arrival").value;
         if (getStationIdsFromName(arrival).length === 0) {
+            return;
+        }
+        if (secondStationSelect.station) {
+            resetMarkersToInitial();
+        }
+        if (firstStationSelect.station && firstStationSelect.station.name === arrival) {
+            showAlert("Veuillez sélectionner deux stations différentes.");
+            document.getElementById("arrival").value = "";
+            resetMarkersToInitial();
             return;
         }
         secondStationSelect = setSelect(stationMap.get(getStationIdsFromName(arrival)[0]), stationMarkers.get(arrival));
@@ -364,7 +382,7 @@ function getStationMarker(stationName, station, stations) {
 /* Utility For Station Selection */
 
 window.onload = function () {
-    if(window.location.protocol === 'file:') {
+    if (window.location.protocol === 'file:') {
         showAlert("Vous lancez l'application en local et non depuis un serveur web.<br>Les fonctionnalités de sauvegarde, connexion etc ne seront pas disponibles.");
     }
     clearInputValues();
@@ -464,6 +482,10 @@ function handleStationSelection(station) {
         resetDisplay();
     }
     if (firstStationSelect.station) {
+        if (firstStationSelect.station === station) {
+            showAlert("Veuillez sélectionner deux stations différentes.");
+            return;
+        }
         secondStationSelect = setSelect(station, stationMarkers.get(station.name));
         marker = stationMarkers.get(secondStationSelect.station.name);
         document.getElementById("arrival").value = secondStationSelect.station.name;
@@ -626,12 +648,11 @@ function getShortestPathBetween(stationsStart, stationsEnd) {
 
 /* Alerts */
 
-function showAlert(message, logo=true,width=-1) {
+function showAlert(message, logo = true, width = -1) {
     const customAlert = document.getElementById('custom-alert');
 
-    console.log(width)
-    if(width != -1 && document.querySelector('body').offsetWidth > 720){
-        customAlert.style.width = width+"%"
+    if (width !== -1 && document.querySelector('body').offsetWidth > 720) {
+        customAlert.style.width = width + "%"
     }
 
     const overlay = document.getElementById('overlay');
@@ -640,19 +661,19 @@ function showAlert(message, logo=true,width=-1) {
     overlay.style.display = 'block';
 
     const alertContent = document.getElementById('alert-content');
-    
+
     html = `
         <div class="alert-content-container">`
 
-        if(logo){
-            html += `<img src="assets/imgs/lines/alert.png" class="alert-image" alt="Alert icon"></img>`
-        }
+    if (logo) {
+        html += `<img src="assets/imgs/lines/alert.png" class="alert-image" alt="Alert icon"></img>`
+    }
 
     html += `<p>${message}</p>
         </div>
         <button id="close-alert">Fermer</button>
     `;
-    
+
     alertContent.innerHTML = html
 
     document.getElementById('close-alert').addEventListener('click', function () {
@@ -697,6 +718,7 @@ function isFromAndToValid() {
     }
     if (firstStationSelect.station === secondStationSelect.station || enteredDeparture === enteredArrival) {
         showAlert("Veuillez sélectionner deux stations différentes.");
+        resetMarkersToInitial();
         return false;
     }
     return true;
@@ -791,6 +813,7 @@ function animateDrawingPolyline(startCoord, endCoord, duration, delay, color) {
                 requestAnimationFrame(frame);
             }
         }
+
         requestAnimationFrame(frame);
     }, delay);
 }
@@ -821,30 +844,20 @@ function animatePathSegment(line) {
 }
 
 /* Path Display */
-currentPathTime = ""
+
 function getPathDisplay(dijkstraResult) {
 
     const {path, time} = dijkstraResult;
-    let hours = Math.floor(time / 3600).toLocaleString('en-US', {
-      minimumIntegerDigits: 2,
-      useGrouping: false
-    });
 
-    if(hours > 0){
-        hours = hours + ":"
-    }else{
-        hours = ""
-    }   
-    console.log(hours)
+    let hours = Math.floor(time / 3600);
+    let minutes = Math.floor((time % 3600) / 60);
+    let seconds = Math.floor(time % 60);
 
-    const minutes = Math.floor((time % 3600) / 60).toLocaleString('en-US', {
-      minimumIntegerDigits: 2,
-      useGrouping: false
-    });
-    const seconds = Math.floor(time % 60).toLocaleString('en-US', {
-      minimumIntegerDigits: 2,
-      useGrouping: false
-    });
+    hours = hours > 0 ? hours.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false}) + ":" : "";
+    minutes = minutes.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false});
+    seconds = seconds.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false});
+
+    let formattedTime = hours + minutes + ":" + seconds;
 
     currentDelay = 0;
 
@@ -877,9 +890,6 @@ function getPathDisplay(dijkstraResult) {
         `;
     }).join("");
 
-    currentPathTime = hours+minutes+":"+seconds
-    console.log(currentPathTime)
-
     const savePath = `
             <div class="save-path">
                 <button onclick="savePath()">Enregistrer le trajet</button>
@@ -889,7 +899,7 @@ function getPathDisplay(dijkstraResult) {
     return `
         <div class="path-display">
             <div class="estimated-time-block">
-                <p class="estimated-time"><strong>Temps estimé :</strong> ${currentPathTime}</p>
+                <p class="estimated-time"><strong>Temps estimé :</strong> ${formattedTime}</p>
             </div>
             ${pathHTML}
             ${savePath}
@@ -936,22 +946,22 @@ function userDataToBack(id, name, email) {
 
 function savePath() {
 
-    if(currentUser == null){
+    if (currentUser == null) {
         showAlert("Vous devez être connecté pour enregistrer un trajet.")
         return
     }
 
-    pathName = prompt("Entrez le nom du trajet :"); 
+    pathName = prompt("Entrez le nom du trajet :");
     var xhr = new XMLHttpRequest();
     var url = 'https://descartographie.ait37.fr/api.php';
-    var params = 'action=savePath&key='+apiKey+'&start=' + encodeURIComponent(document.getElementById("departure").value) + '&end=' + encodeURIComponent(document.getElementById("arrival").value) + '&estimated_time=' + currentPathTime + '&name='+pathName;
+    var params = 'action=savePath&key=' + apiKey + '&start=' + encodeURIComponent(document.getElementById("departure").value) + '&end=' + encodeURIComponent(document.getElementById("arrival").value) + '&estimated_time=' + currentPathTime + '&name=' + pathName;
 
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            console.log(xhr.responseText); 
+            console.log(xhr.responseText);
         }
     };
 
@@ -961,11 +971,11 @@ function savePath() {
 
 
 function getSavedPaths() {
-    
+
     //Request to get saved paths
     var xhr = new XMLHttpRequest();
     var url = 'https://descartographie.ait37.fr/api.php';
-    var params = 'action=getSavedPaths&key='+apiKey+'';
+    var params = 'action=getSavedPaths&key=' + apiKey + '';
 
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -974,7 +984,7 @@ function getSavedPaths() {
 
         if (xhr.readyState == 4 && xhr.status == 200) {
             var response = JSON.parse(xhr.responseText);
-            console.log("fez",response)
+            console.log("fez", response)
             var paths = response.paths;
             var pathsContainer = document.getElementById('saved-paths');
 
@@ -1004,11 +1014,11 @@ function getSavedPaths() {
                 })
 
                 pathsContainer.innerHTML = totalHTML
-                
+
                 /** SAVED PATHS **/
                 pathButtons = document.querySelectorAll('[data-action="saved-path"]')
                 console.log(pathButtons)
-                if(pathButtons){
+                if (pathButtons) {
                     for (let i = 0; i < pathButtons.length; i++) {
                         let button = pathButtons[i];
                         button.addEventListener('click', function (e) {
@@ -1020,19 +1030,19 @@ function getSavedPaths() {
                                 return;
                             }
                             firstStationSelect = setSelect(stationMap.get(getStationIdsFromName(departure)[0]), stationMarkers.get(departure));
-                            
+
                             document.getElementById("arrival").value = button.dataset.to;
                             let arrival = document.getElementById("arrival").value;
                             if (getStationIdsFromName(arrival).length === 0) {
                                 return;
                             }
                             secondStationSelect = setSelect(stationMap.get(getStationIdsFromName(arrival)[0]), stationMarkers.get(arrival));
-                    
+
                             searchDijkstraPathForInputtedStations()
                         })
                     }
                 }
-            }else{
+            } else {
                 pathsContainer.innerHTML = '';
             }
         }
@@ -1040,5 +1050,5 @@ function getSavedPaths() {
 
     xhr.send(params);
 
-    
+
 }
