@@ -60,12 +60,17 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            console.log(xhr.responseText);
-            if (xhr.responseText != "NK") {
+            console.log(xhr.responseText)
+            res = JSON.parse(xhr.responseText)
+            if (res.status == "connected") {
                 document.getElementById("loginBtn").style.display = "none"
+                document.getElementById("loginBtnGoogle").style.display = "none"
                 document.getElementById("logoutBtn").style.display = "block"
-                document.getElementById("logoutBtn").innerHTML = "<i class='fas fa-user'></i> " + JSON.parse(xhr.responseText).name + " - Se déconnecter"
-                currentUser = JSON.parse(xhr.responseText).name
+                document.getElementById("logoutBtn").innerHTML = "<i class='fas fa-user'></i> " + res.user.name + " - Se Desconnecter"
+                currentUser = res.user.name
+            }else{
+                console.log(res)
+                document.getElementById("loginBtnGoogle").href = res.url
             }
         }
     }
@@ -82,7 +87,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         <form method="post" id="connectMe" class="w-100">
         
         <div class="estimated-time-block" >
-        <p class="estimated-time"><strong>Identifiant</strong></p>
+        <p class="estimated-time"><strong>DesConnect</strong></p>
         </div>
         <input type="text" placeholder="E-Mail" id="inputMail" class="w-100">
         <input type="password" id="inputPass" placeholder="Mot de passe" class="w-100">
@@ -124,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             <form method="post" id="registerMe" class="w-100">
             
             <div class="estimated-time-block" >
-            <p class="estimated-time"><strong>Enregistrement</strong></p>
+            <p class="estimated-time"><strong>DesConnect</strong></p>
             </div>
             <input type="text" id="inputName" placeholder="Nom" class="w-100">
             <input type="text" id="inputMail" placeholder="E-Mail" class="w-100">
@@ -164,7 +169,58 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
     })
+
+    
+    document.getElementById("deleteContextMenu").removeEventListener("click", () => {})
+    document.getElementById("deleteContextMenu").addEventListener("click", (e) => {
+        e.preventDefault()
+        console.log(e.target.dataset.dest)
+        var xhr = new XMLHttpRequest();
+        var url = 'https://descartographie.ait37.fr/api.php';
+        var params = 'action=deletePath&key=' + apiKey + '&id=' + e.target.dataset.dest;
+
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        xhr.onreadystatechange = function () {
+
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var response = xhr.responseText;
+                if(response == "OK"){
+                    getSavedPaths()
+                    hideMenu()
+                }else{
+                    showAlert("Une erreur est survenue (1)")
+                }
+            }
+
+        }
+
+        xhr.send(params);
+
+    })
+
 });
+
+function initGoogle() {
+    console.log("Init google...")
+    // Écouteur d'événements sur la div parente
+    document.getElementById('loginBtnGoogle').addEventListener('click', function() {
+        // Accès au contenu de l'iframe
+        var iframe = document.querySelector('iframe');
+        var iframeDocument = iframe.contentWindow.document;
+
+        // Trouver le bouton dans l'iframe
+        var boutonDansIframe = iframeDocument.querySelector("*[aria-labelledby='button-label']");
+
+        // Déclencher le clic sur le bouton
+        if (boutonDansIframe) {
+            boutonDansIframe.click();
+        }
+    });
+
+
+}
 
 /* Commands */
 
@@ -683,18 +739,20 @@ function showAlert(message, logo = true, width = -1) {
 
     document.addEventListener('keydown', handleEscKey);
 
-    function closeAlert() {
-        customAlert.style.display = 'none';
-        overlay.style.display = 'none';
-        document.removeEventListener('keydown', handleEscKey);
-        overlay.removeEventListener('click', closeAlert);
-    }
+}
 
-    function handleEscKey(event) {
-        if (event.key === 'Escape') {
-            closeAlert();
-        }
+function handleEscKey(event) {
+    if (event.key === 'Escape') {
+        closeAlert();
     }
+}
+
+function closeAlert(customAlert=document.getElementById('custom-alert')) {
+    
+    customAlert.style.display = 'none';
+    overlay.style.display = 'none';
+    document.removeEventListener('keydown', handleEscKey);
+    overlay.removeEventListener('click', closeAlert);
 }
 
 function isFromAndToValid() {
@@ -845,6 +903,8 @@ function animatePathSegment(line) {
 
 /* Path Display */
 
+let formattedTime = null
+
 function getPathDisplay(dijkstraResult) {
 
     const {path, time} = dijkstraResult;
@@ -857,7 +917,7 @@ function getPathDisplay(dijkstraResult) {
     minutes = minutes.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false});
     seconds = seconds.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false});
 
-    let formattedTime = hours + minutes + ":" + seconds;
+    formattedTime = hours + minutes + ":" + seconds;
 
     currentDelay = 0;
 
@@ -937,7 +997,7 @@ function userDataToBack(id, name, email) {
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            console.log(xhr.responseText); // à tester
+            // console.log(xhr.responseText); // à tester
         }
     };
 
@@ -951,22 +1011,40 @@ function savePath() {
         return
     }
 
-    pathName = prompt("Entrez le nom du trajet :");
-    var xhr = new XMLHttpRequest();
-    var url = 'https://descartographie.ait37.fr/api.php';
-    var params = 'action=savePath&key=' + apiKey + '&start=' + encodeURIComponent(document.getElementById("departure").value) + '&end=' + encodeURIComponent(document.getElementById("arrival").value) + '&estimated_time=' + currentPathTime + '&name=' + pathName;
+    showAlert(`<div><p>Entrez le nom du trajet :</p>
+    <form class="d-flex" style="flex-direction:column" id="nameTrajetForm"><input type="text" id="nameTrajet"><button type="submit">Valider</button></form></div>`, false);
 
-    xhr.open('POST', url, true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    document.getElementById("nameTrajetForm").removeEventListener("submit", () => {})
 
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            console.log(xhr.responseText);
+    document.getElementById("nameTrajetForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        pathName = document.getElementById("nameTrajet").value
+
+        if(pathName == ""){
+            showAlert("Vous devez entrer un nom pour le trajet.")
+            return
         }
-    };
+        
+        var xhr = new XMLHttpRequest();
+        var url = 'https://descartographie.ait37.fr/api.php';
+        var params = 'action=savePath&key=' + apiKey + '&start=' + encodeURIComponent(document.getElementById("departure").value) + '&end=' + encodeURIComponent(document.getElementById("arrival").value) + '&estimated_time=' + formattedTime + '&name=' + pathName;
 
-    xhr.send(params);
-    getSavedPaths()
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        xhr.onreadystatechange = function () {
+            if (xhr.responseText=="OK") {
+                closeAlert()
+                getSavedPaths()
+            }else{
+                showAlert("Une erreur est survenue")
+            }
+        };
+
+        xhr.send(params);
+
+    })
 }
 
 
@@ -997,7 +1075,7 @@ function getSavedPaths() {
                 paths.forEach(function (path) {
                     console.log(path)
                     totalHTML += `
-                    <div class="path-segment mt-2" data-action="saved-path" data-from="${path.start}" data-to="${path.end}" style="border-left-color: #FFF">
+                    <div class="path-segment mt-2" data-id="${path.id}" data-name="${path.name}" data-action="saved-path" data-from="${path.start}" data-to="${path.end}" style="border-left-color: #FFF">
                         <div class="line-header">
                             <div>
                                 <div class="line-start-station">${path.name} (${path.estimated_time})</div>
@@ -1013,7 +1091,11 @@ function getSavedPaths() {
                     `;
                 })
 
+                
                 pathsContainer.innerHTML = totalHTML
+
+
+                
 
                 /** SAVED PATHS **/
                 pathButtons = document.querySelectorAll('[data-action="saved-path"]')
@@ -1021,6 +1103,9 @@ function getSavedPaths() {
                 if (pathButtons) {
                     for (let i = 0; i < pathButtons.length; i++) {
                         let button = pathButtons[i];
+                        button.addEventListener("contextmenu", function (e) {
+                            rightClick(e,button.dataset.name, button.dataset.id)
+                        });
                         button.addEventListener('click', function (e) {
                             document.getElementById("departure").value = button.dataset.from;
                             deletePathShow();
@@ -1052,3 +1137,26 @@ function getSavedPaths() {
 
 
 }
+
+
+function rightClick(e,name,id) { 
+    console.log(e,name,id);
+    e.preventDefault()
+
+    if (document.getElementById("contextMenu").style.display == "block"){ 
+        hideMenu(); 
+    }else{ 
+        var menu = document.getElementById("contextMenu")
+        console.log(menu)
+        menu.style.display = 'block'; 
+        menu.style.left = e.pageX + "px"; 
+        menu.style.top = (e.pageY-10) + "px"; 
+        document.getElementById("deleteContextMenu").dataset.dest = id
+    } 
+} 
+
+document.onclick = hideMenu; 
+function hideMenu() { 
+    document.getElementById("contextMenu") 
+            .style.display = "none" 
+} 

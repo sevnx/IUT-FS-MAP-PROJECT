@@ -97,7 +97,8 @@ input[type="text"], input[type="password"] {
 
 /* Buttons */
 
-button {
+button,.btn{
+  font-size: 13px;
   padding: 10px;
   margin-bottom: 5%;
   border: none;
@@ -117,9 +118,14 @@ input.w-100{
   width: 100%!important;
 }
 
-button:hover {
+button:hover, .btn:hover {
   transition: background-color .3s;
   background-color: var(--green-color);
+}
+
+.btn{
+  text-decoration: none;
+  text-align: center;
 }
 
 .d-flex {
@@ -413,14 +419,18 @@ footer {
 
 /* -------------------- Responsive -------------------- */
 
-@media only screen and (max-width: 1550px) AND (min-width: 768px) {
+@media only screen and (max-width: 1550px) AND (min-width: 1205px) {
   .title h1{
     display: none;
   }
 
 }
 
-@media only screen and (max-width: 768px) {
+hr{
+  margin-top: 0;
+}
+
+@media only screen and (max-width: 1205px) {
   .app {
     flex-direction: column;
   }
@@ -475,4 +485,55 @@ footer {
 
 .path-display *{
   user-select: none!important;
+}
+
+.connectPanel{
+  display: flex;
+  align-items: center;
+}
+
+
+.context-menu { 
+  position: absolute; 
+  z-index: 999;
+} 
+
+.context-menu ul {
+  list-style: none;
+}
+.menu {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgb(64 64 64 / 5%);
+  padding: 10px 0;
+}
+.menu > li > a {
+  font: inherit;
+  box-sizing: border-box;
+  border: 0;
+  padding: 10px 30px 10px 15px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
+  text-decoration: unset;
+  color: #000;
+  font-weight: 500;
+  transition: 0.5s linear;
+  -webkit-transition: 0.5s linear;
+  -moz-transition: 0.5s linear;
+  -ms-transition: 0.5s linear;
+  -o-transition: 0.5s linear;
+}
+.menu > li > a:hover {
+  background:#f1f3f7;
+  color: var(--purple-color);
+}
+.menu > li > a > i {
+  padding-right: 10px;
+}
+.menu > li.trash > a:hover {
+  color: red;
 }

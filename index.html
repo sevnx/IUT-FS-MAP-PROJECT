@@ -17,6 +17,11 @@
 </head>
 <body>
     <div class="app">
+        <div id="contextMenu" class="context-menu" style="display: none"> 
+            <ul class="menu"> 
+                <li><a href="#" id="deleteContextMenu"><i class="fa fa-trash" aria-hidden="true"></i> Supprimer</a></li> 
+            </ul> 
+        </div> 
         <div class="control-panel">
             <div class="title">
                 <img class="logo" src="assets/imgs/map-icon.png" alt="Descartographie logo">
@@ -33,7 +38,12 @@
                 <button id="search" class="w-75">Rechercher</button>
                 <button class="btn-danger w-20" id="reset"><i class="fas fa-times"></i></button>
             </div>
-            <button class="w-100" id="loginBtn">Se connecter</button>
+            <div class="connectPanel">
+
+                <a href="#" class="w-100 btn" style="margin-right: 2.5%;" id="loginBtn">Se connecter</a>
+                <a href="#" class="w-100 btn" style="margin-left: 2.5%;" id="loginBtnGoogle"><i class="fab fa-google"></i></a>
+
+            </div>
             <button class="w-100" id="logoutBtn" style="display: none;">Se déconnecter</button>
             
             <!-- Alert -->
@@ -43,7 +53,6 @@
 
             <div id="overlay" class="overlay">
             </div>
-
 
             <div id="path">
             </div>
@@ -65,10 +74,10 @@
     </div>
     
     <footer>
-        <p>© Copyright 2023 <strong>DesCorp</strong>. Tous Droits Réservés.</p>
+        <p>© Copyright 2023-2024 <strong>DesCorp</strong>. Tous Droits Réservés.</p>
     </footer>
     
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://accounts.google.com/gsi/client?onload=initGoogle" async defer></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 </body>
 </html>
